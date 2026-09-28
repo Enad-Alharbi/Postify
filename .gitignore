@@ -1,0 +1,83 @@
+# =========================
+# .NET / Visual Studio
+# =========================
+
+# Build output
+**/bin/
+**/obj/
+
+# Visual Studio cache/settings
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# =========================
+# .NET generated files
+# =========================
+
+*.dll
+*.exe
+*.pdb
+*.cache
+
+# Generated NuGet files
+**/packages/
+*.nupkg
+*.snupkg
+
+# NuGet cache
+project.lock.json
+project.fragment.lock.json
+
+# =========================
+# ASP.NET Core
+# =========================
+
+# User secrets
+**/secrets.json
+
+# Local development configuration
+appsettings.Local.json
+
+# =========================
+# Logs
+# =========================
+
+*.log
+logs/
+
+# =========================
+# Database
+# =========================
+
+# Local SQLite databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# =========================
+# Environment variables
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+# OS files
+# =========================
+
+.DS_Store
+Thumbs.db
+desktop.ini
