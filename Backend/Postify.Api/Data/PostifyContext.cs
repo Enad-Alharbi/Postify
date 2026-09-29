@@ -34,7 +34,7 @@ public class PostifyContext(DbContextOptions<PostifyContext> options) : DbContex
                     .HasMany(user => user.Comments)
                     .WithOne(comment => comment.User)
                     .HasForeignKey(comment => comment.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
 
         // Post 1:N Comment Relationship
         modelBuilder.Entity<Post>()
