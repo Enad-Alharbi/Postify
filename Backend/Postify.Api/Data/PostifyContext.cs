@@ -12,23 +12,76 @@ public class PostifyContext(DbContextOptions<PostifyContext> options) : DbContex
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // User 1-----1 Profile Relationship
+        // Database Relationships: 
+
+        // User 1:1 Profile Relationship
         modelBuilder.Entity<ApplicationUser>()
                     .HasOne(user => user.Profile)
                     .WithOne(profile => profile.User)
                     .HasForeignKey<Profile>(profile => profile.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
     
-        // User 1-----N Post Relationship
+        // User 1:N Post Relationship
         modelBuilder.Entity<ApplicationUser>()
                     .HasMany(user => user.Posts)
                     .WithOne(post => post.User)
                     .HasForeignKey(post => post.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-        // User 1-----N Comment Relationship
+        // User 1:N Comment Relationship
         modelBuilder.Entity<ApplicationUser>()
                     .HasMany(user => user.Comments)
-                    .WithOne(comment =>)
+                    .WithOne(comment => comment.User)
+                    .HasForeignKey(comment => comment.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        // Post 1:N Comment Relationship
+        modelBuilder.Entity<Post>()
+                    .HasMany(post => post.Comments)
+                    .WithOne(comment => comment.Post)
+                    .HasForeignKey(comment => comment.PostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+        // Database Constraints: 
+
+        // Unique Username Constraint
+        modelBuilder.Entity<ApplicationUser>()
+                    .HasIndex(user => user.UserName)
+                    .IsUnique();
+        
+        // Unique Email Constraint
+        modelBuilder.Entity<ApplicationUser>()
+                    .HasIndex(user => user.Email)
+                    .IsUnique();
+
+        // Username Length Constraint
+        modelBuilder.Entity<ApplicationUser>()
+                    .Property(user => user.UserName)
+                    .HasMaxLength(20);
+
+        // Email Length Constraint
+        modelBuilder.Entity<ApplicationUser>()
+                    .Property(user => user.Email)
+                    .HasMaxLength(254);
+
+        // First Name Length Constraint
+        modelBuilder.Entity<ApplicationUser>()
+                    .Property(user => user.FirstName)
+                    .HasMaxLength(50);
+
+        // Last Name Length Constraint
+        modelBuilder.Entity<ApplicationUser>()
+                    .Property(user => user.LastName)
+                    .HasMaxLength(50);
+
+        // Bio Length Constraint
+        modelBuilder.Entity<Profile>()
+                    .Property(profile => profile.Bio)
+                    .HasMaxLength(250);
+
+        // Comment Content Length Constraint
+        modelBuilder.Entity<Comment>()
+                    .Property(comment => comment.Content)
+                    .HasMaxLength(250);
     }
 }
