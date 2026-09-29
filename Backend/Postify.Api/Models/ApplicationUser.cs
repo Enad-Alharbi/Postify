@@ -1,6 +1,8 @@
+using Postify.Api.Interfaces;
+
 namespace Postify.Api.Models;
 
-public class ApplicationUser
+public class ApplicationUser : ITimestampedEntity
 {
     public Guid Id { get; set; }
     public required string UserName { get; set; }
@@ -12,4 +14,5 @@ public class ApplicationUser
     public List<Post> Posts { get; set; } = [];
     public List<Comment> Comments { get; set; } = [];
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

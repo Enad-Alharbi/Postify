@@ -1,6 +1,8 @@
+using Postify.Api.Interfaces;
+
 namespace Postify.Api.Models;
 
-public class Comment
+public class Comment : ITimestampedEntity
 {
     public Guid Id { get; set; }
     public required string Content { get; set; }

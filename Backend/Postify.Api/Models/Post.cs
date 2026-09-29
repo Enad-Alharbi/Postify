@@ -1,6 +1,8 @@
+using Postify.Api.Interfaces;
+
 namespace Postify.Api.Models;
 
-public class Post
+public class Post : ITimestampedEntity
 {
     public Guid Id { get; set; }
     public required string PostImagePath { get; set; }

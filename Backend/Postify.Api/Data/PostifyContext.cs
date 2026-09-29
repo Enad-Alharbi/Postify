@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Postify.Api.Interfaces;
 using Postify.Api.Models;
 
 namespace Postify.Api.Data;
@@ -83,5 +84,38 @@ public class PostifyContext(DbContextOptions<PostifyContext> options) : DbContex
         modelBuilder.Entity<Comment>()
                     .Property(comment => comment.Content)
                     .HasMaxLength(250);
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ApplyTimestamps();
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override int SaveChanges()
+    {
+        ApplyTimestamps();
+
+        return base.SaveChanges();
+    }
+
+    private void ApplyTimestamps()
+    {
+        var entries = ChangeTracker.Entries<ITimestampedEntity>();
+        var now = DateTime.UtcNow;
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {   
+                entry.Entity.CreatedAt = now;
+                entry.Entity.UpdatedAt = now;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
     }
 }

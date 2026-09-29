@@ -1,6 +1,8 @@
+using Postify.Api.Interfaces;
+
 namespace Postify.Api.Models;
 
-public class Profile
+public class Profile : ITimestampedEntity
 {
     public Guid Id { get; set; }
     public string? Bio { get; set; }
