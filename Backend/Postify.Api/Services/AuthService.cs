@@ -6,7 +6,7 @@ using Postify.Api.Models;
 
 namespace Postify.Api.Services;
 
-public class AuthService(PostifyContext dbContext, IPasswordService passwordService) : IAuthService
+public class AuthService(PostifyContext dbContext, IPasswordService passwordService, ITokenService tokenService) : IAuthService
 {
     public async Task<RegisterResult> RegisterAsync(RegisterDto request)
     {
@@ -50,4 +50,26 @@ public class AuthService(PostifyContext dbContext, IPasswordService passwordServ
                                                     newUser.FirstName, LastName:
                                                     newUser.LastName));
     }
+
+    public async Task<LoginResult> LoginAsync(LoginDto request)
+    {
+        ApplicationUser? user = await dbContext.Users.FirstOrDefaultAsync(u
+            => (u.UserName == request.EmailOrUserName) ||
+               (u.Email == request.EmailOrUserName));
+
+        if (user is null)
+        {
+            return new LoginResult(Success: false, Message: "Invalid Credentials!", AccessToken: null);
+        }
+
+        var isPasswordValid = passwordService.VerifyPassword(user, request.Password, user.PasswordHash);
+
+        if (!isPasswordValid)
+        {
+            return new LoginResult(Success: false, Message: "Invalid Credentials!", AccessToken: null);
+        }
+
+        var token = tokenService.CreateToken(user);
+        return new LoginResult(Success: true, Message: null, AccessToken:token);
+    } 
 }

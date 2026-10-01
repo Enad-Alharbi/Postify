@@ -16,17 +16,30 @@ namespace Postify.Api.Controllers
         {
             var registerResult = await authService.RegisterAsync(request);
 
-            if(registerResult.Success == false && registerResult.Message == "Username Already Exists!")
+            if(!registerResult.Success && registerResult.Message == "Username Already Exists!")
             {
                 return BadRequest("Username Already Exists!");
             } 
 
-            if(registerResult.Success == false && registerResult.Message == "Email Already Exists!")
+            if(!registerResult.Success && registerResult.Message == "Email Already Exists!")
             {
                 return BadRequest("Email Already Exists!");
             }
 
             return Created(GetUserEndpointName, registerResult);
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResult>> Login(LoginDto request)
+        {
+            var loginResult = await authService.LoginAsync(request);
+
+            if (!loginResult.Success)
+            {
+                return BadRequest("Invalid Credentials!");
+            }
+            
+            return Ok(loginResult);
         }
 
     }
