@@ -1,10 +1,16 @@
+using Microsoft.AspNetCore.Identity;
 using Postify.Api.Data;
+using Postify.Api.Interfaces;
+using Postify.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSqlServer<PostifyContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 var app = builder.Build();
 
