@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Postify.Api.Dtos;
@@ -42,5 +43,11 @@ namespace Postify.Api.Controllers
             return Ok(loginResult);
         }
 
+        [Authorize]
+        [HttpGet("auth-test")]
+        public ActionResult AuthTest()
+        {
+            return Ok("You are authenticated!");
+        }
     }
 }
