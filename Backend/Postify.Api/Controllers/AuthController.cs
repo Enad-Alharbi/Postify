@@ -43,11 +43,5 @@ namespace Postify.Api.Controllers
             return Ok(loginResult);
         }
 
-        [Authorize]
-        [HttpGet("auth-test")]
-        public ActionResult AuthTest()
-        {
-            return Ok("You are authenticated!");
-        }
     }
 }
