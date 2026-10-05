@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Postify.Api.Extensions;
 
-public static class AddAuthenticationExtension
+public static class AuthenticationExtension
 {
     public static void AddAuthentication(this WebApplicationBuilder builder)
     {

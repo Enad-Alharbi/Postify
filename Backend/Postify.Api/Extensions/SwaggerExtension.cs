@@ -2,7 +2,7 @@ using Microsoft.OpenApi;
 
 namespace Postify.Api.Extensions;
 
-public static class AddSwaggerExtension
+public static class SwaggerExtension
 {
     public static void AddSwagger(this WebApplicationBuilder builder)
     {
