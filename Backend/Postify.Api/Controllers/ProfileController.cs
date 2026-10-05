@@ -27,7 +27,7 @@ namespace Postify.Api.Controllers
                 return NotFound("Profile is not found");
             }
 
-            return profile;
+            return Ok(profile);
         }
     }
 }
