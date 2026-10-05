@@ -3,7 +3,7 @@ using Postify.Api.Services;
 
 namespace Postify.Api.Extensions;
 
-public static class RegisterServicesExtensions
+public static class RegisterServicesExtension
 {
     public static void RegisterServices(this WebApplicationBuilder builder)
     {
