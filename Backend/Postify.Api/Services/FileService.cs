@@ -19,6 +19,15 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
             throw new ArgumentException("The uploaded file must be 5MB or less");
         }
 
+        var pictureExtension = Path.GetExtension(picture.FileName);
+        var allowedExtensions = new List<string>{".jpg", ".jpeg", ".png"};
+
+            if(!allowedExtensions.Contains(pictureExtension))
+            {
+                throw new ArgumentException("The uploaded file must match one of these extensions: .jpg, .jpeg, .png");
+            }
+            
+
         var folderPath = Path.Combine(
             webHostEnvironment.WebRootPath,
             "uploads",
@@ -32,7 +41,6 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
             Directory.CreateDirectory(folderPath);
         }
 
-        var pictureExtension = Path.GetExtension(picture.FileName);
 
         var newPictureName = $"{Guid.NewGuid()}{pictureExtension}";
 
