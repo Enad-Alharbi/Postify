@@ -29,5 +29,25 @@ namespace Postify.Api.Controllers
 
             return Ok(profile);
         }
-    }
+
+        [Authorize]
+        [HttpPut("me")]
+        public async Task<ActionResult<UpdateProfileResultDto>> UpdateUserProfile([FromForm] UpdateProfileDto request)
+        {
+            if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            {
+                return BadRequest("Something Went Wrong!");
+            }
+
+            var updateProfileResult = await profileService.UpdateUserProfileAsync(userId, request);
+
+            if(!updateProfileResult.Success)
+            {
+                return BadRequest(updateProfileResult.Message);
+            }
+            return Ok(updateProfileResult);
+        }
+    };
+
+
 }
