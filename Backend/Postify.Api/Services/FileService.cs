@@ -26,7 +26,13 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
             {
                 throw new ArgumentException("The uploaded file must match one of these extensions: .jpg, .jpeg, .png");
             }
-            
+        
+        var allowedContentTypes = new List<string>{"image/png", "image/jpg", "image/jpeg"};
+        
+        if(!allowedContentTypes.Contains(picture.ContentType))
+        {
+            throw new ArgumentException("The uploaded file content type must match one of these content types: image/jpg, image/jpeg, image/png");
+        }
 
         var folderPath = Path.Combine(
             webHostEnvironment.WebRootPath,
