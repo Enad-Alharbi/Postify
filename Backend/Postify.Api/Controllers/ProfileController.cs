@@ -13,7 +13,7 @@ namespace Postify.Api.Controllers
     {
         [Authorize]
         [HttpGet("me")]
-        public async Task<ActionResult<ProfileDto>> GetUserProfile()
+        public async Task<ActionResult<UserProfileDto>> GetUserProfile()
         {
             if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             {
