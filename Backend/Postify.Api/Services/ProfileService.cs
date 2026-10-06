@@ -5,7 +5,7 @@ using Postify.Api.Interfaces;
 
 namespace Postify.Api.Services;
 
-public class ProfileService(PostifyContext dbContext) : IProfileService
+public class ProfileService(PostifyContext dbContext, IFileService fileService) : IProfileService
 {
     public async Task<UserProfileDto?> GetUserProfileAsync(Guid userId)
     {
@@ -34,7 +34,11 @@ public class ProfileService(PostifyContext dbContext) : IProfileService
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         profile.Bio = request.Bio;
-        profile.ProfilePicturePath = null;
+
+        if(request.ProfilePicture is not null)
+        {
+            profile.ProfilePicturePath = await SavePicture(request.ProfilePicture);
+        }
 
         await dbContext.SaveChangesAsync();
 
@@ -57,5 +61,11 @@ public class ProfileService(PostifyContext dbContext) : IProfileService
                                 .FirstOrDefaultAsync();
         
         return userProfile;
+    }
+
+    private async Task<string> SavePicture(IFormFile picture)
+    {
+        var webPath = await fileService.UploadProfilePictureAsync(picture);
+        return webPath;
     }
 }

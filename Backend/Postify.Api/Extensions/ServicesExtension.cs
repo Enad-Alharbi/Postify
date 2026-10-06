@@ -12,5 +12,6 @@ public static class ServicesExtension
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IProfileService, ProfileService>();
+        builder.Services.AddScoped<IFileService, FileService>();
     }
 }
