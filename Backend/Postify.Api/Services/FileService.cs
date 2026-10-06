@@ -11,6 +11,14 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
             throw new ArgumentException("The uploaded file is empty!");
         }
 
+        // 5 MB
+        const int MaxPictureSize = 5 * 1024 * 1024;
+
+        if(picture.Length > MaxPictureSize)
+        {
+            throw new ArgumentException("The uploaded file must be 5MB or less");
+        }
+
         var folderPath = Path.Combine(
             webHostEnvironment.WebRootPath,
             "uploads",
