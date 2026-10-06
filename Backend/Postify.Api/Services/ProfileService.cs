@@ -37,7 +37,13 @@ public class ProfileService(PostifyContext dbContext, IFileService fileService) 
 
         if(request.ProfilePicture is not null)
         {
-            profile.ProfilePicturePath = await SavePicture(request.ProfilePicture);
+            try
+            {
+                profile.ProfilePicturePath = await SavePicture(request.ProfilePicture);
+            } catch (ArgumentException e)
+            {
+                 return new UpdateProfileResultDto(Success: false, Message: e.Message, UpdatedProfile: null);
+            }
         }
 
         await dbContext.SaveChangesAsync();

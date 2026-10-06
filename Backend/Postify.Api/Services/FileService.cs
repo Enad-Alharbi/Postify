@@ -6,6 +6,11 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
 {
     public async Task<string> UploadProfilePictureAsync(IFormFile picture)
     {
+        if(picture.Length == 0)
+        {
+            throw new ArgumentException("The uploaded file is empty!");
+        }
+
         var folderPath = Path.Combine(
             webHostEnvironment.WebRootPath,
             "uploads",
