@@ -1,6 +1,6 @@
 namespace Postify.Api.Dtos;
 
-public record LoginResult
+public record LoginResultDto
 (
     bool Success,
     string? Message,

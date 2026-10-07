@@ -13,7 +13,7 @@ namespace Postify.Api.Controllers
         const string GetUserEndpointName = "/api/Profile/me";
 
         [HttpPost("register")]
-        public async Task<ActionResult<RegisterResult>> Register(RegisterDto request)
+        public async Task<ActionResult<RegisterResultDto>> Register(RegisterDto request)
         {
             var registerResult = await authService.RegisterAsync(request);
 
@@ -31,7 +31,7 @@ namespace Postify.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResult>> Login(LoginDto request)
+        public async Task<ActionResult<LoginResultDto>> Login(LoginDto request)
         {
             var loginResult = await authService.LoginAsync(request);
 
