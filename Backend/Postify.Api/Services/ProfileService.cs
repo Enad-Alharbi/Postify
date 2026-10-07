@@ -35,8 +35,11 @@ public class ProfileService(PostifyContext dbContext, IFileService fileService) 
         user.LastName = request.LastName;
         profile.Bio = request.Bio;
 
+        string? oldPicturePath = null;
+
         if(request.ProfilePicture is not null)
         {
+            oldPicturePath = profile.ProfilePicturePath;
             try
             {
                 profile.ProfilePicturePath = await SavePicture(request.ProfilePicture);
@@ -46,7 +49,12 @@ public class ProfileService(PostifyContext dbContext, IFileService fileService) 
             }
         }
 
-        await dbContext.SaveChangesAsync();
+        var changes = await dbContext.SaveChangesAsync();
+
+        if(changes > 0 && oldPicturePath is not null)
+        {
+            fileService.DeleteOldProfilePicture(oldPicturePath);
+        }
 
         return new UpdateProfileResultDto(Success: true,
                     Message: "Profile Updated Successfully!",

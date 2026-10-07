@@ -22,10 +22,10 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
         var pictureExtension = Path.GetExtension(picture.FileName);
         var allowedExtensions = new List<string>{".jpg", ".jpeg", ".png"};
 
-            if(!allowedExtensions.Contains(pictureExtension))
-            {
-                throw new ArgumentException("The uploaded file must match one of these extensions: .jpg, .jpeg, .png");
-            }
+        if(!allowedExtensions.Contains(pictureExtension))
+        {
+             throw new ArgumentException("The uploaded file must match one of these extensions: .jpg, .jpeg, .png");
+        }
         
         var allowedContentTypes = new List<string>{"image/png", "image/jpg", "image/jpeg"};
         
@@ -47,14 +47,25 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
             Directory.CreateDirectory(folderPath);
         }
 
-
         var newPictureName = $"{Guid.NewGuid()}{pictureExtension}";
 
         var picturePath = Path.Combine(folderPath, newPictureName);
+
 
         using var stream = new FileStream(picturePath, FileMode.Create);
         await picture.CopyToAsync(stream);
 
         return $"{webPath}{newPictureName}";
+    }
+
+    public void DeleteOldProfilePicture(string picturePath)
+    {
+        var relativePath = picturePath.TrimStart('/');
+        var physicalPath = Path.Combine(webHostEnvironment.WebRootPath, relativePath);
+
+        if(File.Exists(physicalPath))
+        {
+            File.Delete(physicalPath);
+        }
     }
 }
