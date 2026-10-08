@@ -13,7 +13,7 @@ namespace Postify.Api.Controllers
     {
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<CreatePostResultDto>> CreatePost(CreatePostDto request)
+        public async Task<ActionResult<CreatePostResultDto>> CreatePost([FromForm] CreatePostDto request)
         {
             if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             {
