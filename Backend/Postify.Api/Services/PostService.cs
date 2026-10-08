@@ -57,4 +57,16 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
 
         return post;
     }
+
+    public async Task<List<PostDto>> GetAllPostsAsync()
+    {
+        List<PostDto> posts = await dbContext.Posts.Select(post => new PostDto(Id: post.Id,
+                                                                               PostImagePath: post.PostImagePath,
+                                                                               Caption: post.Caption,
+                                                                               UserId: post.UserId,
+                                                                               CreatedAt: post.CreatedAt))
+                                                    .ToListAsync();
+
+        return posts;
+    }
 }

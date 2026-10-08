@@ -26,6 +26,15 @@ namespace Postify.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<List<PostDto>>> GetAllPosts()
+        {
+            List<PostDto> posts = await postService.GetAllPostsAsync();
+
+            return Ok(posts);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<CreatePostResultDto>> CreatePost([FromForm] CreatePostDto request)
         {
