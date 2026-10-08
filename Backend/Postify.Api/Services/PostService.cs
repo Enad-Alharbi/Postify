@@ -2,6 +2,7 @@ using System;
 using Postify.Api.Data;
 using Postify.Api.Dtos;
 using Postify.Api.Interfaces;
+using Postify.Api.Models;
 
 namespace Postify.Api.Services;
 
@@ -9,6 +10,31 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
 {
     public async Task<CreatePostResultDto> CreatePostAsync(Guid userId, CreatePostDto request)
     {
+        var postImagePath = "";
+
+        try
+        {
+            postImagePath = await fileService.UploadPostImageAsync(request.PostImage);
+        } catch (ArgumentException e)
+        {
+            return new CreatePostResultDto(Success: false, Message: e.Message, Post: null);
+        }
         
+        Post post = new Post
+        {
+          PostImagePath = postImagePath,
+          Caption = request.Caption,
+          UserId = userId  
+        };
+
+        dbContext.Posts.Add(post);
+        await dbContext.SaveChangesAsync();
+        
+        return new CreatePostResultDto(Success: true,
+                                       Message: "Post Created Successfully!",
+                                       Post: new PostDto(Id: post.Id,
+                                                        PostImagePath: post.PostImagePath,
+                                                        Caption: post.Caption,
+                                                        UserId: userId));
     }
 }
