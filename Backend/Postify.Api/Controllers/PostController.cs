@@ -12,6 +12,20 @@ namespace Postify.Api.Controllers
     public class PostController(IPostService postService) : ControllerBase
     {
         [Authorize]
+        [HttpGet("{postId}")]
+        public async Task<ActionResult<PostDto>> GetPost(Guid postId)
+        {
+            var post = await postService.GetPostAsync(postId);
+
+            if(post is null)
+            {
+                return NotFound("There's no post with this id");
+            }
+
+            return Ok(post);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<CreatePostResultDto>> CreatePost([FromForm] CreatePostDto request)
         {
@@ -27,7 +41,7 @@ namespace Postify.Api.Controllers
                 return BadRequest(createPostResult);
             }
 
-            return Created($"/api/Post/{createPostResult.Post!.Id}", createPostResult);
+            return CreatedAtAction(nameof(GetPost), new {postId = createPostResult.Post!.Id}, createPostResult);
         }
     }
 }

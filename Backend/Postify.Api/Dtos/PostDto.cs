@@ -6,6 +6,7 @@ public record PostDto(
     Guid Id,
     string PostImagePath,
     string? Caption,
-    Guid UserId
-    // List of comments
+    Guid UserId,
+    // List of comments,
+    DateTime CreatedAt
 );
