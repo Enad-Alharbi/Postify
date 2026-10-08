@@ -9,7 +9,7 @@ namespace Postify.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProfileController(IProfileService profileService) : ControllerBase
+    public class ProfilesController(IProfileService profileService) : ControllerBase
     {
         [Authorize]
         [HttpGet("me")]

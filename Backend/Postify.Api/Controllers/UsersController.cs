@@ -9,7 +9,7 @@ namespace Postify.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IUserService userService) : ControllerBase
+    public class UsersController(IUserService userService) : ControllerBase
     {
         [Authorize]
         [HttpGet("me")]
