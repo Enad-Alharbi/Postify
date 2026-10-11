@@ -4,6 +4,7 @@ using Postify.Api.Data;
 using Postify.Api.Dtos;
 using Postify.Api.Interfaces;
 using Postify.Api.Models;
+using Postify.Api.Enums;
 
 namespace Postify.Api.Services;
 
@@ -68,5 +69,30 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                     .ToListAsync();
 
         return posts;
+    }
+
+    public async Task<UpdatePostResultDto> UpdatePostAsync(Guid postId, Guid userId, UpdatePostDto request)
+    {
+        var post = await dbContext.Posts.FirstOrDefaultAsync(post => post.Id == postId);
+
+        if(post is null)
+        {
+            return new UpdatePostResultDto(Status: ResultStatusEnum.NotFound, Message: "Post not found", Post: null);
+        }
+
+        if(!(post.UserId == userId))
+        {
+            return new UpdatePostResultDto(Status: ResultStatusEnum.Forbidden, Message: "You're not allowed to edit another user post", Post: null);
+        }
+
+        post.Caption = request.Caption;
+
+        await dbContext.SaveChangesAsync();
+
+        return new UpdatePostResultDto(Status: ResultStatusEnum.Success, Message: "Post edited successfully", Post: new PostDto(Id: post.Id,
+                                                                                                                    PostImagePath: post.PostImagePath,
+                                                                                                                    Caption: post.Caption,
+                                                                                                                    UserId: post.UserId,
+                                                                                                                    CreatedAt: post.CreatedAt));
     }
 }

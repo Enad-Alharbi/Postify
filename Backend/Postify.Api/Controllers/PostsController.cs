@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Postify.Api.Dtos;
 using Postify.Api.Interfaces;
+using Postify.Api.Enums;
 
 namespace Postify.Api.Controllers
 {
@@ -51,6 +52,30 @@ namespace Postify.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetPost), new {postId = createPostResult.Post!.Id}, createPostResult);
+        }
+
+        [Authorize]
+        [HttpPut("{postId}")]
+        public async Task<ActionResult<UpdatePostResultDto>> UpdatePost(Guid postId, UpdatePostDto request)
+        {
+            if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            {
+                return BadRequest("Something went wrong");
+            }
+
+            var post = await postService.UpdatePostAsync(postId, userId, request);
+
+            if (post.Status == ResultStatusEnum.NotFound)
+            {
+                return NotFound(post);
+            }
+
+            if(post.Status == ResultStatusEnum.Forbidden)
+            {
+                return StatusCode(403, post);
+            }
+
+            return Ok(post);
         }
     }
 }
