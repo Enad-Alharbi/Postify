@@ -53,7 +53,7 @@ public class ProfileService(PostifyContext dbContext, IFileService fileService) 
 
         if(changes > 0 && oldPicturePath is not null)
         {
-            fileService.DeleteOldProfilePicture(oldPicturePath);
+            fileService.DeletePicture(oldPicturePath);
         }
 
         return new UpdateProfileResultDto(Success: true,

@@ -77,5 +77,29 @@ namespace Postify.Api.Controllers
 
             return Ok(post);
         }
+
+        [Authorize]
+        [HttpDelete("{postId}")]
+        public async Task<ActionResult<DeletePostResultDto>> DeletePost(Guid postId)
+        {
+            if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            {
+                return BadRequest("Something went wrong!");
+            }
+
+            var result = await postService.DeletePostAsync(postId, userId);
+
+            if(result.Status == ResultStatusEnum.NotFound)
+            {
+                return NotFound(result);
+            }
+
+            if(result.Status == ResultStatusEnum.Forbidden)
+            {
+                return StatusCode(403, result);
+            }
+
+            return Ok(result);
+        } 
     }
 }

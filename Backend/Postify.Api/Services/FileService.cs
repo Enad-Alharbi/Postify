@@ -60,7 +60,7 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
         return $"{webPath}{newPictureName}";
     }
 
-    public void DeleteOldProfilePicture(string picturePath)
+    public void DeletePicture(string picturePath)
     {
         var relativePath = picturePath.TrimStart('/');
         var physicalPath = Path.Combine(webHostEnvironment.WebRootPath, relativePath);

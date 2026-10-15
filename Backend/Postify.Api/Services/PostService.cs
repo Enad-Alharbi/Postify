@@ -95,4 +95,26 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                                                                     UserId: post.UserId,
                                                                                                                     CreatedAt: post.CreatedAt));
     }
+
+    public async Task<DeletePostResultDto> DeletePostAsync(Guid postId, Guid userId)
+    {
+        var post = await dbContext.Posts.FirstOrDefaultAsync(post => post.Id == postId);
+
+        if(post is null)
+        {
+            return new DeletePostResultDto(Status: ResultStatusEnum.NotFound, Message: "Post is not found!");
+        }
+
+        if(post.UserId != userId)
+        {
+            return new DeletePostResultDto(Status: ResultStatusEnum.Forbidden, Message: "You are not allowed to remove this post");
+        }
+
+        dbContext.Posts.Remove(post);
+        await dbContext.SaveChangesAsync();
+
+        fileService.DeletePicture(post.PostImagePath);
+
+        return new DeletePostResultDto(Status: ResultStatusEnum.Success, Message: "Post deleted successfully!");
+    }
 }
