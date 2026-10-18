@@ -28,12 +28,47 @@ public class CommentService(PostifyContext dbContext) : ICommentService
         dbContext.Comments.Add(comment);
         await dbContext.SaveChangesAsync();
 
+        var commentResult = await dbContext.Comments.Where(commentResult => commentResult.Id == comment.Id)
+                                                    .Select(comment => new CommentDto(Id: comment.Id,
+                                                                                 Content: comment.Content,
+                                                                                 UserId: comment.UserId,
+                                                                                 UserName: comment.User.UserName,
+                                                                                 PostId: comment.PostId,
+                                                                                 CreatedAt: comment.CreatedAt))
+                                                    .FirstOrDefaultAsync();
+
+
         return new CreateCommentResultDto(Success: true,
                                           Message: "Comment created successfully!",
-                                          Comment: new CommentDto(Id: comment.Id,
-                                                                  Content: comment.Content,
-                                                                  UserId: comment.UserId,
-                                                                  PostId: comment.PostId,
-                                                                  CreatedAt: comment.CreatedAt));
+                                          Comment: commentResult);
+    }
+
+    public async Task<List<CommentDto>?> GetCommentsByPostIdAsync(Guid postId)
+    {
+        var post = await dbContext.Posts.FirstOrDefaultAsync(post => post.Id == postId);
+
+        if(post is null)
+        {
+            return null;
+        }
+
+        var comments = await dbContext.Comments.Where(comment => comment.PostId == postId)
+                                               .OrderByDescending(comment => comment.CreatedAt)
+                                               .Select(comment => new CommentDto(Id: comment.Id,
+                                                                                 Content: comment.Content,
+                                                                                 UserId: comment.UserId,
+                                                                                 UserName: comment.User.UserName,
+                                                                                 PostId: comment.PostId,
+                                                                                 CreatedAt: comment.CreatedAt))
+                                               .ToListAsync();
+
+        return comments;
+    }
+
+    private async Task<string> GetUserNameAsync(Guid userId)
+    {
+        var user = await dbContext.Users.FindAsync(userId);
+
+        return user!.UserName;
     }
 }

@@ -30,5 +30,19 @@ namespace Postify.Api.Controllers
             // Should be CreatedAtRoute after implementing GetComment
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpGet("Posts/{postId}/Comments")]
+        public async Task<ActionResult<List<CommentDto>>> GetCommentsByPostId(Guid postId)
+        {
+            var comments = await commentService.GetCommentsByPostIdAsync(postId);
+
+            if(comments is null)
+            {
+                return NotFound("Post not found!");
+            }
+
+            return Ok(comments);
+        }
     }
 }
