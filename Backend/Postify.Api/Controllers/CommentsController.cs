@@ -27,8 +27,7 @@ namespace Postify.Api.Controllers
                 return NotFound(result);
             }
 
-            // Should be CreatedAtRoute after implementing GetComment
-            return Ok(result);
+            return CreatedAtAction(nameof(GetCommentById), new {commentId = result.Comment!.Id}, result);
         }
 
         [Authorize]
@@ -43,6 +42,20 @@ namespace Postify.Api.Controllers
             }
 
             return Ok(comments);
+        }
+    
+        [Authorize]
+        [HttpGet("Comments/{commentId}")]
+        public async Task<ActionResult<CommentDto>> GetCommentById(Guid commentId)
+        {
+            var comment = await commentService.GetCommentByIdAsync(commentId);
+
+            if(comment is null)
+            {
+                return NotFound("Comment not found!");
+            }
+
+            return Ok(comment);
         }
     }
 }

@@ -65,4 +65,22 @@ public class CommentService(PostifyContext dbContext) : ICommentService
         return comments;
     }
 
+    public async Task<CommentDto?> GetCommentByIdAsync(Guid commentId)
+    {
+        var comment = await dbContext.Comments.Where(comment => comment.Id == commentId)
+                                              .Select(comment => new CommentDto(Id: comment.Id,
+                                                                                Content: comment.Content,
+                                                                                UserId: comment.UserId,
+                                                                                UserName: comment.User.UserName,
+                                                                                PostId: comment.PostId,
+                                                                                CreatedAt: comment.CreatedAt))
+                                              .FirstOrDefaultAsync();
+
+        if(comment is null)
+        {
+            return null;
+        }
+
+        return comment;
+    }
 }
