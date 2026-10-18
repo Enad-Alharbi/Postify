@@ -83,4 +83,35 @@ public class CommentService(PostifyContext dbContext) : ICommentService
 
         return comment;
     }
+
+    public async Task<UpdateCommentResultDto> UpdateCommentAsync(Guid commentId, Guid userId, UpdateCommentDto request)
+    {
+        var comment = await dbContext.Comments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+        if(comment is null)
+        {
+            return new UpdateCommentResultDto(ResultStatusEnum.NotFound, Message: "Comment not found!", Comment: null);
+        }
+
+        if(comment.UserId != userId)
+        {
+            return new UpdateCommentResultDto(ResultStatusEnum.Forbidden, Message: "You're not allowed to update this comment", Comment:null);
+        }
+
+        comment.Content = request.Content;
+
+        await dbContext.SaveChangesAsync();
+
+        var updatedComment = await dbContext.Comments.Where(comment => comment.Id == commentId)
+                                                     .Select(comment => new CommentDto(Id: comment.Id,
+                                                                                       Content: comment.Content,
+                                                                                       UserId: comment.UserId,
+                                                                                       UserName: comment.User.UserName,
+                                                                                       PostId: comment.PostId,
+                                                                                       CreatedAt: comment.CreatedAt))
+                                                     .SingleAsync();
+
+        return new UpdateCommentResultDto(ResultStatusEnum.Success, Message: "Comment updated successfully", Comment: updatedComment);
+    
+    }
 }
