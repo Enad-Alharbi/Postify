@@ -82,5 +82,29 @@ namespace Postify.Api.Controllers
 
             return Ok(commentResult);
         }
+    
+        [Authorize]
+        [HttpDelete("Comments/{commentId}")]
+        public async Task<ActionResult<DeleteCommentResultDto>> DeleteComment(Guid commentId)
+        {
+            if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            {
+                return BadRequest("Something went wrong!");
+            }
+
+            var deleteCommentResult = await commentService.DeleteCommentAsync(commentId, userId);
+
+            if(deleteCommentResult.Status == ResultStatusEnum.NotFound)
+            {
+                return NotFound(deleteCommentResult);
+            }
+
+            if(deleteCommentResult.Status == ResultStatusEnum.Forbidden)
+            {
+                return StatusCode(403, deleteCommentResult);
+            }
+
+            return Ok(deleteCommentResult);
+        }
     }
 }

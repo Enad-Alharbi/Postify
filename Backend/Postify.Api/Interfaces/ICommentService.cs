@@ -9,4 +9,5 @@ public interface ICommentService
     public Task<List<CommentDto>?> GetCommentsByPostIdAsync(Guid postId);
     public Task<CommentDto?> GetCommentByIdAsync(Guid commentId);
     public Task<UpdateCommentResultDto> UpdateCommentAsync(Guid commentId, Guid userId, UpdateCommentDto request);
+    public Task<DeleteCommentResultDto> DeleteCommentAsync(Guid commentId, Guid userId);
 }

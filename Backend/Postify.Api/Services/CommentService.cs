@@ -114,4 +114,24 @@ public class CommentService(PostifyContext dbContext) : ICommentService
         return new UpdateCommentResultDto(ResultStatusEnum.Success, Message: "Comment updated successfully", Comment: updatedComment);
     
     }
+
+    public async Task<DeleteCommentResultDto> DeleteCommentAsync(Guid commentId, Guid userId)
+    {
+        var comment = await dbContext.Comments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+        if(comment is null)
+        {
+            return new DeleteCommentResultDto(ResultStatusEnum.NotFound, Message: "Comment not found");
+        }
+
+        if(comment.UserId != userId)
+        {
+            return new DeleteCommentResultDto(ResultStatusEnum.Forbidden, Message: "You're not allowed to delete this comment");
+        }
+
+        dbContext.Comments.Remove(comment);
+        await dbContext.SaveChangesAsync();
+
+        return new DeleteCommentResultDto(ResultStatusEnum.Success, Message: "Comment deleted successfully");
+    }
 }
