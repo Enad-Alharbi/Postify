@@ -65,10 +65,4 @@ public class CommentService(PostifyContext dbContext) : ICommentService
         return comments;
     }
 
-    private async Task<string> GetUserNameAsync(Guid userId)
-    {
-        var user = await dbContext.Users.FindAsync(userId);
-
-        return user!.UserName;
-    }
 }
