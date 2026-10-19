@@ -47,6 +47,20 @@ namespace Postify.Api.Controllers
             }
             return Ok(updateProfileResult);
         }
+    
+        [Authorize]
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<UserProfileDto>> GetUserProfileById(Guid userId)
+        {
+            var profile = await profileService.GetUserProfileByIdAsync(userId);
+
+            if(profile is null)
+            {
+                return NotFound("Profile not found!");
+            }
+
+            return Ok(profile);
+        }
     };
 
 

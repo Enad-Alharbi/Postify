@@ -65,6 +65,18 @@ public class ProfileService(PostifyContext dbContext, IFileService fileService) 
                                     ProfilePicturePath: profile.ProfilePicturePath));
     }
 
+    public async Task<UserProfileDto?> GetUserProfileByIdAsync(Guid userId)
+    {
+        var userProfile = await GetUserProfile(userId);
+
+        if(userProfile is null)
+        {
+            return null;
+        }
+
+        return userProfile;
+    }
+
     private async Task<UserProfileDto?> GetUserProfile(Guid userId)
     {
         var userProfile = await dbContext.Profiles.Where(profile => profile.UserId == userId)
