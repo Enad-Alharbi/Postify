@@ -1,5 +1,3 @@
-using Postify.Api.Models;
-
 namespace Postify.Api.Dtos;
 
 public record PostDto(
@@ -7,6 +5,6 @@ public record PostDto(
     string PostImagePath,
     string? Caption,
     Guid UserId,
-    // List of comments,
+    string UserName,
     DateTime CreatedAt
 );

@@ -31,14 +31,19 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
 
         dbContext.Posts.Add(post);
         await dbContext.SaveChangesAsync();
+
+        var newPost = await dbContext.Posts.Where(p => p.Id == post.Id)
+                                           .Select(post => new PostDto(Id: post.Id,
+                                                                           PostImagePath: post.PostImagePath,
+                                                                           Caption: post.Caption,
+                                                                           UserId: post.UserId,
+                                                                           UserName: post.User.UserName,
+                                                                           CreatedAt: post.CreatedAt))
+                                            .SingleAsync();
         
         return new CreatePostResultDto(Success: true,
                                        Message: "Post Created Successfully!",
-                                       Post: new PostDto(Id: post.Id,
-                                                        PostImagePath: post.PostImagePath,
-                                                        Caption: post.Caption,
-                                                        UserId: userId,
-                                                        CreatedAt: post.CreatedAt));
+                                       Post: newPost);
     }
 
     public async Task<PostDto?> GetPostAsync(Guid postId)
@@ -48,6 +53,7 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                     PostImagePath: post.PostImagePath,
                                                                     Caption: post.Caption,
                                                                     UserId: post.UserId,
+                                                                    UserName: post.User.UserName,
                                                                     CreatedAt: post.CreatedAt))
                                         .FirstOrDefaultAsync();
 
@@ -65,6 +71,7 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                                PostImagePath: post.PostImagePath,
                                                                                Caption: post.Caption,
                                                                                UserId: post.UserId,
+                                                                               UserName: post.User.UserName,
                                                                                CreatedAt: post.CreatedAt))
                                                     .ToListAsync();
 
@@ -89,11 +96,16 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
 
         await dbContext.SaveChangesAsync();
 
-        return new UpdatePostResultDto(Status: ResultStatusEnum.Success, Message: "Post edited successfully", Post: new PostDto(Id: post.Id,
-                                                                                                                    PostImagePath: post.PostImagePath,
-                                                                                                                    Caption: post.Caption,
-                                                                                                                    UserId: post.UserId,
-                                                                                                                    CreatedAt: post.CreatedAt));
+        var updatedPost = await dbContext.Posts.Where(post => post.Id == postId)
+                                               .Select(post => new PostDto(Id: post.Id,
+                                                                           PostImagePath: post.PostImagePath,
+                                                                           Caption: post.Caption,
+                                                                           UserId: post.UserId,
+                                                                           UserName: post.User.UserName,
+                                                                           CreatedAt: post.CreatedAt))
+                                                .SingleAsync();
+
+        return new UpdatePostResultDto(Status: ResultStatusEnum.Success, Message: "Post edited successfully", Post: updatedPost);
     }
 
     public async Task<DeletePostResultDto> DeletePostAsync(Guid postId, Guid userId)
