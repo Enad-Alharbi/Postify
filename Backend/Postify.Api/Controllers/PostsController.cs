@@ -28,9 +28,14 @@ namespace Postify.Api.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<PostDto>>> GetAllPosts()
+        public async Task<ActionResult<List<PostDto>>> GetAllPosts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10 )
         {
-            List<PostDto> posts = await postService.GetAllPostsAsync();
+            if(pageNumber <= 0 || pageSize > 10 || pageSize <= 0)
+            {
+                return BadRequest("Please enter valid pageNumber/pageSize");
+            }
+
+            List<PostDto> posts = await postService.GetAllPostsAsync(pageNumber, pageSize);
 
             return Ok(posts);
         }

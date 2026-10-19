@@ -65,15 +65,18 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
         return post;
     }
 
-    public async Task<List<PostDto>> GetAllPostsAsync()
+    public async Task<List<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize)
     {
-        List<PostDto> posts = await dbContext.Posts.Select(post => new PostDto(Id: post.Id,
+        List<PostDto> posts = await dbContext.Posts.OrderByDescending(post => post.CreatedAt)
+                                                   .Skip(CalculateSkip(pageNumber, pageSize))
+                                                   .Take(pageSize)
+                                                   .Select(post => new PostDto(Id: post.Id,
                                                                                PostImagePath: post.PostImagePath,
                                                                                Caption: post.Caption,
                                                                                UserId: post.UserId,
                                                                                UserName: post.User.UserName,
                                                                                CreatedAt: post.CreatedAt))
-                                                    .ToListAsync();
+                                                   .ToListAsync();
 
         return posts;
     }
@@ -128,5 +131,11 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
         fileService.DeletePicture(post.PostImagePath);
 
         return new DeletePostResultDto(Status: ResultStatusEnum.Success, Message: "Post deleted successfully!");
+    }
+
+    // Helper methods
+    private int CalculateSkip(int pageNumber, int pageSize)
+    {
+        return (pageNumber - 1) * pageSize;
     }
 }
