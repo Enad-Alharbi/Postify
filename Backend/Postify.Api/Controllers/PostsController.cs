@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Postify.Api.Dtos;
 using Postify.Api.Interfaces;
 using Postify.Api.Enums;
+using Postify.Api.Dtos.Common;
 
 namespace Postify.Api.Controllers
 {
@@ -28,16 +29,16 @@ namespace Postify.Api.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<PostDto>>> GetAllPosts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10 )
+        public async Task<ActionResult<PaginatedResponseDto<PostDto>>> GetAllPosts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10 )
         {
             if(pageNumber <= 0 || pageSize > 10 || pageSize <= 0)
             {
                 return BadRequest("Please enter valid pageNumber/pageSize");
             }
 
-            List<PostDto> posts = await postService.GetAllPostsAsync(pageNumber, pageSize);
+            var result = await postService.GetAllPostsAsync(pageNumber, pageSize);
 
-            return Ok(posts);
+            return Ok(result);
         }
 
         [Authorize]

@@ -5,6 +5,7 @@ using Postify.Api.Dtos;
 using Postify.Api.Interfaces;
 using Postify.Api.Models;
 using Postify.Api.Enums;
+using Postify.Api.Dtos.Common;
 
 namespace Postify.Api.Services;
 
@@ -65,7 +66,7 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
         return post;
     }
 
-    public async Task<List<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize)
+    public async Task<PaginatedResponseDto<PostDto>> GetAllPostsAsync(int pageNumber, int pageSize)
     {
         List<PostDto> posts = await dbContext.Posts.OrderByDescending(post => post.CreatedAt)
                                                    .Skip(CalculateSkip(pageNumber, pageSize))
@@ -78,7 +79,12 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                                CreatedAt: post.CreatedAt))
                                                    .ToListAsync();
 
-        return posts;
+        var totalCount = await dbContext.Posts.CountAsync();
+
+        var totalPages = CalculateTotalPages(totalCount, pageSize);
+
+        var result = new PaginatedResponseDto<PostDto>(Items: posts, PageNumber: pageNumber, PageSize: pageSize, TotalCount: totalCount, TotalPages: totalPages);
+        return result;
     }
 
     public async Task<UpdatePostResultDto> UpdatePostAsync(Guid postId, Guid userId, UpdatePostDto request)
@@ -137,5 +143,10 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
     private int CalculateSkip(int pageNumber, int pageSize)
     {
         return (pageNumber - 1) * pageSize;
+    }
+
+    private int CalculateTotalPages(int totalCount, int pageSize)
+    {
+        return (int)Math.Ceiling((double)totalCount / pageSize);
     }
 }
