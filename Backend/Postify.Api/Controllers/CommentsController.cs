@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Postify.Api.Dtos;
 using Postify.Api.Interfaces;
 using Postify.Api.Enums;
+using Postify.Api.Dtos.Common;
 
 namespace Postify.Api.Controllers
 {
@@ -33,16 +34,21 @@ namespace Postify.Api.Controllers
 
         [Authorize]
         [HttpGet("Posts/{postId}/Comments")]
-        public async Task<ActionResult<List<CommentDto>>> GetCommentsByPostId(Guid postId)
+        public async Task<ActionResult<PaginatedResponseDto<CommentDto>>> GetCommentsByPostId(Guid postId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var comments = await commentService.GetCommentsByPostIdAsync(postId);
+            if(pageNumber <= 0 || pageSize > 10 || pageSize <= 0)
+            {
+                return BadRequest("Please enter valid pageNumber/pageSize");
+            }
 
-            if(comments is null)
+            var result = await commentService.GetCommentsByPostIdAsync(postId, pageNumber, pageSize);
+
+            if(result is null)
             {
                 return NotFound("Post not found!");
             }
 
-            return Ok(comments);
+            return Ok(result);
         }
     
         [Authorize]

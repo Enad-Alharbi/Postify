@@ -5,6 +5,7 @@ using Postify.Api.Dtos;
 using Postify.Api.Interfaces;
 using Postify.Api.Enums;
 using Postify.Api.Models;
+using Postify.Api.Dtos.Common;
 
 namespace Postify.Api.Services;
 
@@ -43,7 +44,7 @@ public class CommentService(PostifyContext dbContext) : ICommentService
                                           Comment: commentResult);
     }
 
-    public async Task<List<CommentDto>?> GetCommentsByPostIdAsync(Guid postId)
+    public async Task<PaginatedResponseDto<CommentDto>?> GetCommentsByPostIdAsync(Guid postId, int pageNumber, int pageSize)
     {
         var post = await dbContext.Posts.FirstOrDefaultAsync(post => post.Id == postId);
 
@@ -54,6 +55,8 @@ public class CommentService(PostifyContext dbContext) : ICommentService
 
         var comments = await dbContext.Comments.Where(comment => comment.PostId == postId)
                                                .OrderByDescending(comment => comment.CreatedAt)
+                                               .Skip(CalculateSkip(pageNumber, pageSize))
+                                               .Take(pageSize)
                                                .Select(comment => new CommentDto(Id: comment.Id,
                                                                                  Content: comment.Content,
                                                                                  UserId: comment.UserId,
@@ -62,7 +65,11 @@ public class CommentService(PostifyContext dbContext) : ICommentService
                                                                                  CreatedAt: comment.CreatedAt))
                                                .ToListAsync();
 
-        return comments;
+        var totalCount = await dbContext.Comments.Where(comment => comment.PostId == postId).CountAsync();
+
+        var totalPages = CalculateTotalPages(totalCount, pageSize);
+
+        return new PaginatedResponseDto<CommentDto>(Items: comments, PageNumber: pageNumber, PageSize: pageSize, TotalCount: totalCount, TotalPages: totalPages);
     }
 
     public async Task<CommentDto?> GetCommentByIdAsync(Guid commentId)
@@ -133,5 +140,17 @@ public class CommentService(PostifyContext dbContext) : ICommentService
         await dbContext.SaveChangesAsync();
 
         return new DeleteCommentResultDto(ResultStatusEnum.Success, Message: "Comment deleted successfully");
+    }
+
+    // Helper methods
+
+    private int CalculateSkip(int pageNumber, int pageSize)
+    {
+        return (pageNumber - 1) * pageSize;
+    }
+
+    private int CalculateTotalPages(int totalCount, int pageSize)
+    {
+        return (int)Math.Ceiling((double)totalCount / pageSize);
     }
 }
