@@ -17,7 +17,7 @@ namespace Postify.Api.Controllers
         {
             if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             {
-                return BadRequest("Something Went Wrong!");
+                return Unauthorized();
             }
 
             var user = await userService.GetCurrentUserAsync(userId);

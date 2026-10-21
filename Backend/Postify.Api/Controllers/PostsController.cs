@@ -47,7 +47,7 @@ namespace Postify.Api.Controllers
         {
             if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             {
-                return BadRequest("Something went wrong!");
+                return Unauthorized();
             }
 
             var createPostResult = await postService.CreatePostAsync(userId, request);
@@ -66,7 +66,7 @@ namespace Postify.Api.Controllers
         {
             if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             {
-                return BadRequest("Something went wrong");
+                return Unauthorized();
             }
 
             var post = await postService.UpdatePostAsync(postId, userId, request);
@@ -90,7 +90,7 @@ namespace Postify.Api.Controllers
         {
             if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             {
-                return BadRequest("Something went wrong!");
+                return Unauthorized();
             }
 
             var result = await postService.DeletePostAsync(postId, userId);
