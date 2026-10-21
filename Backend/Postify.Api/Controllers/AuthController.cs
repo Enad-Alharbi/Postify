@@ -10,7 +10,7 @@ namespace Postify.Api.Controllers
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        const string GetUserEndpointName = "/api/Profile/me";
+        const string GetUserEndpointName = "/api/Users/me";
 
         [HttpPost("register")]
         public async Task<ActionResult<RegisterResultDto>> Register(RegisterDto request)
