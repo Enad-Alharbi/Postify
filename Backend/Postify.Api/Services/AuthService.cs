@@ -10,11 +10,14 @@ public class AuthService(PostifyContext dbContext, IPasswordService passwordServ
 {
     public async Task<RegisterResultDto> RegisterAsync(RegisterDto request)
     {
-        if (await dbContext.Users.AnyAsync(user => user.UserName == request.UserName))
+        var loweredUserName = request.UserName.Trim().ToLowerInvariant();
+        var loweredEmail = request.Email.Trim().ToLowerInvariant();
+
+        if (await dbContext.Users.AnyAsync(user => user.UserName == loweredUserName))
         {
             return new RegisterResultDto(Success: false, Message: "Username Already Exists!", User: null);
         }
-        if (await dbContext.Users.AnyAsync(user => user.Email == request.Email))
+        if (await dbContext.Users.AnyAsync(user => user.Email == loweredEmail))
         {
             return new RegisterResultDto(Success: false, Message: "Email Already Exists!", User: null);
         }
@@ -27,8 +30,8 @@ public class AuthService(PostifyContext dbContext, IPasswordService passwordServ
 
         ApplicationUser newUser = new ApplicationUser
         {
-            UserName = request.UserName,
-            Email = request.Email,
+            UserName = loweredUserName,
+            Email = loweredEmail,
             PasswordHash = "",
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -53,9 +56,11 @@ public class AuthService(PostifyContext dbContext, IPasswordService passwordServ
 
     public async Task<LoginResultDto> LoginAsync(LoginDto request)
     {
+        var loweredEmailOrUserName = request.EmailOrUserName.Trim().ToLowerInvariant();
+
         ApplicationUser? user = await dbContext.Users.FirstOrDefaultAsync(u
-            => (u.UserName == request.EmailOrUserName) ||
-               (u.Email == request.EmailOrUserName));
+            => (u.UserName == loweredEmailOrUserName) ||
+               (u.Email == loweredEmailOrUserName));
 
         if (user is null)
         {
