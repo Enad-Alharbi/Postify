@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Postify.Api.Dtos;
 
 public record UpdateCommentDto(
-    string Content
+    [Required][StringLength(250)] string Content
 );
