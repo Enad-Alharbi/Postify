@@ -1,0 +1,75 @@
+// Design tokens from the Figma Make prototype (see docs/PROGRESS.md).
+:root {
+  // Text
+  --color-ink: #252333;
+  --color-muted: #747181;
+  --color-soft: #aaa6b3;
+
+  // Surfaces
+  --color-canvas: #f7f5f2;
+  --color-surface: #fff;
+  --color-surface-soft: #f1eef8;
+  --color-line: #e7e3e0;
+
+  // Brand
+  --color-indigo: #5145a8;
+  --color-indigo-dark: #40368c;
+  --color-indigo-pale: #eeebfb;
+  --color-coral: #e58a72;
+
+  // Status
+  --color-danger: #c94b4b;
+  --color-danger-pale: #fff0ef;
+  --color-success: #347c61;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-sm: 0 2px 12px rgba(49, 42, 71, 0.05);
+  --shadow-md: 0 14px 50px rgba(49, 42, 71, 0.12);
+
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-heading: 'Manrope', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-heading);
+  letter-spacing: -0.035em;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+.eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--color-indigo);
+}
