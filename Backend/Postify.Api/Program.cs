@@ -1,8 +1,11 @@
 using Postify.Api.Data;
 using Postify.Api.Extensions;
+using TaskatiApp.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddAngularCorsPolicy();
 
 builder.Services.AddOpenApi();
 
@@ -28,6 +31,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 
 }
+
+app.UseAngularCorsPolicy();
 
 app.UseHttpsRedirection();
 
