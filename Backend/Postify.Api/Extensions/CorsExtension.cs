@@ -1,4 +1,4 @@
-namespace TaskatiApp.Data;
+namespace Postify.Api.Extensions;
 
 public static class CorsExtension
 {

@@ -1,6 +1,5 @@
 using Postify.Api.Data;
 using Postify.Api.Extensions;
-using TaskatiApp.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +34,9 @@ if (app.Environment.IsDevelopment())
 app.UseAngularCorsPolicy();
 
 app.UseHttpsRedirection();
+
+// Serve uploaded images (wwwroot/uploads/...) as /uploads/...
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
