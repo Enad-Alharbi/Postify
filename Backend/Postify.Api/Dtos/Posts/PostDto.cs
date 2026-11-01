@@ -6,5 +6,8 @@ public record PostDto(
     string? Caption,
     Guid UserId,
     string UserName,
+    string FirstName,
+    string LastName,
+    string? ProfilePicturePath,
     DateTime CreatedAt
 );

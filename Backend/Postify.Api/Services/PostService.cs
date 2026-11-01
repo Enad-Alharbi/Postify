@@ -39,6 +39,9 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                            Caption: post.Caption,
                                                                            UserId: post.UserId,
                                                                            UserName: post.User.UserName,
+                                                                           FirstName: post.User.FirstName,
+                                                                           LastName: post.User.LastName,
+                                                                           ProfilePicturePath: post.User.Profile.ProfilePicturePath,
                                                                            CreatedAt: post.CreatedAt))
                                             .SingleAsync();
         
@@ -55,6 +58,9 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                     Caption: post.Caption,
                                                                     UserId: post.UserId,
                                                                     UserName: post.User.UserName,
+                                                                    FirstName: post.User.FirstName,
+                                                                    LastName: post.User.LastName,
+                                                                    ProfilePicturePath: post.User.Profile.ProfilePicturePath,
                                                                     CreatedAt: post.CreatedAt))
                                         .FirstOrDefaultAsync();
 
@@ -76,6 +82,9 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                                Caption: post.Caption,
                                                                                UserId: post.UserId,
                                                                                UserName: post.User.UserName,
+                                                                               FirstName: post.User.FirstName,
+                                                                               LastName: post.User.LastName,
+                                                                               ProfilePicturePath: post.User.Profile.ProfilePicturePath,
                                                                                CreatedAt: post.CreatedAt))
                                                    .ToListAsync();
 
@@ -111,6 +120,9 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
                                                                            Caption: post.Caption,
                                                                            UserId: post.UserId,
                                                                            UserName: post.User.UserName,
+                                                                           FirstName: post.User.FirstName,
+                                                                           LastName: post.User.LastName,
+                                                                           ProfilePicturePath: post.User.Profile.ProfilePicturePath,
                                                                            CreatedAt: post.CreatedAt))
                                                 .SingleAsync();
 

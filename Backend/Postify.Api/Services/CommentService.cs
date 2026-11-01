@@ -34,6 +34,9 @@ public class CommentService(PostifyContext dbContext) : ICommentService
                                                                                  Content: comment.Content,
                                                                                  UserId: comment.UserId,
                                                                                  UserName: comment.User.UserName,
+                                                                                 FirstName: comment.User.FirstName,
+                                                                                 LastName: comment.User.LastName,
+                                                                                 ProfilePicturePath: comment.User.Profile.ProfilePicturePath,
                                                                                  PostId: comment.PostId,
                                                                                  CreatedAt: comment.CreatedAt))
                                                     .FirstOrDefaultAsync();
@@ -61,6 +64,9 @@ public class CommentService(PostifyContext dbContext) : ICommentService
                                                                                  Content: comment.Content,
                                                                                  UserId: comment.UserId,
                                                                                  UserName: comment.User.UserName,
+                                                                                 FirstName: comment.User.FirstName,
+                                                                                 LastName: comment.User.LastName,
+                                                                                 ProfilePicturePath: comment.User.Profile.ProfilePicturePath,
                                                                                  PostId: comment.PostId,
                                                                                  CreatedAt: comment.CreatedAt))
                                                .ToListAsync();
@@ -79,6 +85,9 @@ public class CommentService(PostifyContext dbContext) : ICommentService
                                                                                 Content: comment.Content,
                                                                                 UserId: comment.UserId,
                                                                                 UserName: comment.User.UserName,
+                                                                                FirstName: comment.User.FirstName,
+                                                                                LastName: comment.User.LastName,
+                                                                                ProfilePicturePath: comment.User.Profile.ProfilePicturePath,
                                                                                 PostId: comment.PostId,
                                                                                 CreatedAt: comment.CreatedAt))
                                               .FirstOrDefaultAsync();
@@ -114,6 +123,9 @@ public class CommentService(PostifyContext dbContext) : ICommentService
                                                                                        Content: comment.Content,
                                                                                        UserId: comment.UserId,
                                                                                        UserName: comment.User.UserName,
+                                                                                       FirstName: comment.User.FirstName,
+                                                                                       LastName: comment.User.LastName,
+                                                                                       ProfilePicturePath: comment.User.Profile.ProfilePicturePath,
                                                                                        PostId: comment.PostId,
                                                                                        CreatedAt: comment.CreatedAt))
                                                      .SingleAsync();
