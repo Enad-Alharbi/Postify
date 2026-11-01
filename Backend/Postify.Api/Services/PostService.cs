@@ -96,6 +96,31 @@ public class PostService(PostifyContext dbContext, IFileService fileService) : I
         return result;
     }
 
+    public async Task<PaginatedResponseDto<PostDto>> GetUserPostsAsync(Guid userId, int pageNumber, int pageSize)
+    {
+        List<PostDto> posts = await dbContext.Posts.Where(post => post.UserId == userId)
+                                                   .OrderByDescending(post => post.CreatedAt)
+                                                   .Skip(CalculateSkip(pageNumber, pageSize))
+                                                   .Take(pageSize)
+                                                   .Select(post => new PostDto(Id: post.Id,
+                                                                               PostImagePath: post.PostImagePath,
+                                                                               Caption: post.Caption,
+                                                                               UserId: post.UserId,
+                                                                               UserName: post.User.UserName,
+                                                                               FirstName: post.User.FirstName,
+                                                                               LastName: post.User.LastName,
+                                                                               ProfilePicturePath: post.User.Profile.ProfilePicturePath,
+                                                                               CreatedAt: post.CreatedAt))
+                                                   .ToListAsync();
+
+        var totalCount = await dbContext.Posts.CountAsync(post => post.UserId == userId);
+
+        var totalPages = CalculateTotalPages(totalCount, pageSize);
+
+        var result = new PaginatedResponseDto<PostDto>(Items: posts, PageNumber: pageNumber, PageSize: pageSize, TotalCount: totalCount, TotalPages: totalPages);
+        return result;
+    }
+
     public async Task<UpdatePostResultDto> UpdatePostAsync(Guid postId, Guid userId, UpdatePostDto request)
     {
         var post = await dbContext.Posts.FirstOrDefaultAsync(post => post.Id == postId);

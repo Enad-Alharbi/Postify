@@ -42,6 +42,39 @@ namespace Postify.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("me")]
+        public async Task<ActionResult<PaginatedResponseDto<PostDto>>> GetMyPosts([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10 )
+        {
+            if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            {
+                return Unauthorized();
+            }
+
+            if(pageNumber <= 0 || pageSize > 10 || pageSize <= 0)
+            {
+                return BadRequest("Please enter valid pageNumber/pageSize");
+            }
+
+            var result = await postService.GetUserPostsAsync(userId, pageNumber, pageSize);
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<PaginatedResponseDto<PostDto>>> GetUserPosts(Guid userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10 )
+        {
+            if(pageNumber <= 0 || pageSize > 10 || pageSize <= 0)
+            {
+                return BadRequest("Please enter valid pageNumber/pageSize");
+            }
+
+            var result = await postService.GetUserPostsAsync(userId, pageNumber, pageSize);
+
+            return Ok(result);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<CreatePostResultDto>> CreatePost([FromForm] CreatePostDto request)
         {
