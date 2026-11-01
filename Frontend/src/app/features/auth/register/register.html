@@ -1,0 +1,109 @@
+<app-auth-shell>
+  <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <p class="eyebrow">WELCOME TO POSTIFY</p>
+    <h2>Create your account</h2>
+    <p class="support">Join a thoughtful community built around beautiful moments.</p>
+
+    @if (success()) {
+      <div class="success-panel" role="status">
+        <span class="success-icon"><app-icon name="check" [size]="26" /></span>
+        <h3>Your account is ready</h3>
+        <p>Welcome to Postify. Sign in to begin sharing your moments.</p>
+        <a class="button button-primary" routerLink="/login">Continue to sign in</a>
+      </div>
+    } @else {
+      <div class="field-row">
+        <label class="field">
+          <span>First name</span>
+          <input formControlName="firstName" placeholder="Maya" autocomplete="given-name" [attr.aria-invalid]="showError('firstName')" />
+          @if (showError('firstName')) {
+            <small class="field-error">
+              {{ hasError('firstName', 'maxlength') ? 'Keep it under 50 characters.' : 'Enter your first name.' }}
+            </small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Last name</span>
+          <input formControlName="lastName" placeholder="Patel" autocomplete="family-name" [attr.aria-invalid]="showError('lastName')" />
+          @if (showError('lastName')) {
+            <small class="field-error">
+              {{ hasError('lastName', 'maxlength') ? 'Keep it under 50 characters.' : 'Enter your last name.' }}
+            </small>
+          }
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Email address</span>
+        <input formControlName="email" type="email" placeholder="you@example.com" autocomplete="email" [attr.aria-invalid]="showError('email')" />
+        @if (showError('email')) {
+          <small class="field-error">
+            @if (hasError('email', 'required')) {
+              Enter your email address.
+            } @else if (hasError('email', 'maxlength')) {
+              Keep it under 254 characters.
+            } @else {
+              Enter a valid email address.
+            }
+          </small>
+        }
+      </label>
+
+      <label class="field">
+        <span>Username</span>
+        <input formControlName="userName" placeholder="mayamakes" autocomplete="username" [attr.aria-invalid]="showError('userName')" />
+        @if (showError('userName')) {
+          <small class="field-error">
+            {{ hasError('userName', 'maxlength') ? 'Keep it under 20 characters.' : 'Choose a username.' }}
+          </small>
+        } @else {
+          <small>This is how people will find you.</small>
+        }
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <span class="input-shell">
+          <input
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            placeholder="Enter your password"
+            autocomplete="new-password"
+            [attr.aria-invalid]="showError('password')"
+          />
+          <button
+            type="button"
+            class="input-action"
+            (click)="showPassword.set(!showPassword())"
+            [attr.aria-pressed]="showPassword()"
+            aria-label="Toggle password visibility"
+          >
+            <app-icon name="eye" />
+          </button>
+        </span>
+        @if (showError('password')) {
+          <small class="field-error">
+            {{ hasError('password', 'minlength') ? 'Password must be at least 8 characters.' : 'Enter a password.' }}
+          </small>
+        } @else {
+          <small>Use at least 8 characters.</small>
+        }
+      </label>
+
+      @if (error()) {
+        <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+      }
+
+      <button type="submit" class="button button-primary full" [disabled]="loading()">
+        @if (loading()) {
+          <span class="spinner"></span>Creating account…
+        } @else {
+          Create Account
+        }
+      </button>
+
+      <p class="auth-switch">Already have an account?<a routerLink="/login">Sign in</a></p>
+    }
+  </form>
+</app-auth-shell>

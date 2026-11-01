@@ -1,0 +1,61 @@
+<app-auth-shell>
+  <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <p class="eyebrow">WELCOME TO POSTIFY</p>
+    <h2>Welcome back</h2>
+    <p class="support">Sign in to see what your people have been sharing.</p>
+
+    <label class="field">
+      <span>Email or username</span>
+      <input
+        formControlName="emailOrUserName"
+        placeholder="maya@example.com"
+        autocomplete="username"
+        [attr.aria-invalid]="showError('emailOrUserName')"
+        aria-describedby="login-identifier-error"
+      />
+      @if (showError('emailOrUserName')) {
+        <small class="field-error" id="login-identifier-error">Enter your email or username.</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <span class="input-shell">
+        <input
+          formControlName="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          [attr.aria-invalid]="showError('password')"
+          aria-describedby="login-password-error"
+        />
+        <button
+          type="button"
+          class="input-action"
+          (click)="showPassword.set(!showPassword())"
+          [attr.aria-pressed]="showPassword()"
+          aria-label="Toggle password visibility"
+        >
+          <app-icon name="eye" />
+        </button>
+      </span>
+      @if (showError('password')) {
+        <small class="field-error" id="login-password-error">Enter your password.</small>
+      }
+    </label>
+
+    @if (error()) {
+      <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+    }
+
+    <button type="submit" class="button button-primary full" [disabled]="loading()">
+      @if (loading()) {
+        <span class="spinner"></span>Signing in…
+      } @else {
+        Sign In
+      }
+    </button>
+
+    <p class="auth-switch">New to Postify?<a routerLink="/register">Create an account</a></p>
+  </form>
+</app-auth-shell>

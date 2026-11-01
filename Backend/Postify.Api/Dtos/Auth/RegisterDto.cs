@@ -7,5 +7,5 @@ public record RegisterDto(
     [Required][StringLength(50)] string LastName,
     [Required][EmailAddress][StringLength(254)] string Email,
     [Required][StringLength(20)] string UserName,
-    [Required] string Password
+    [Required][MinLength(8)] string Password
 );

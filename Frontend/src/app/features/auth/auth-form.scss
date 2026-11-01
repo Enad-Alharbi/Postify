@@ -1,0 +1,44 @@
+// Form styles shared by the login and register pages.
+.auth-form {
+  width: 100%;
+  max-width: 430px;
+
+  h2 {
+    font-size: 36px;
+    margin: 0 0 10px;
+  }
+}
+
+.support {
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 30px;
+}
+
+.auth-switch {
+  margin: 22px 0 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+
+  a {
+    margin-left: 4px;
+    color: var(--indigo);
+    font-weight: 700;
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .auth-form {
+    h2 {
+      font-size: 31px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+  }
+}

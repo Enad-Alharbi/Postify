@@ -1,0 +1,33 @@
+.success-panel {
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: white;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+
+  h3 {
+    font-size: 23px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .button {
+    text-decoration: none;
+  }
+}
+
+.success-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 17px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: var(--success);
+}

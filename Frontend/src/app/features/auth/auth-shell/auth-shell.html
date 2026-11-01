@@ -1,0 +1,19 @@
+<main class="auth-shell">
+  <section class="auth-visual">
+    <img [src]="heroImage" alt="Coffee being poured overlooking a peaceful coast" />
+    <div class="auth-overlay">
+      <app-logo />
+      <div>
+        <p class="eyebrow light">YOUR MOMENTS, BEAUTIFULLY KEPT</p>
+        <h1>Share the view.<br />Keep the feeling.</h1>
+        <p>A quieter place for the images and stories worth remembering.</p>
+      </div>
+      <span>Thoughtful sharing, one post at a time.</span>
+    </div>
+  </section>
+
+  <section class="auth-form-wrap">
+    <div class="mobile-auth-logo"><app-logo /></div>
+    <ng-content />
+  </section>
+</main>

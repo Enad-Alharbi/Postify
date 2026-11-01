@@ -1,75 +1,309 @@
-// Design tokens from the Figma Make prototype (see docs/PROGRESS.md).
+// Design tokens and shared base styles, ported from the Figma Make prototype's index.css.
+// Token names match the prototype 1:1 so its CSS can be ported directly.
 :root {
-  // Text
-  --color-ink: #252333;
-  --color-muted: #747181;
-  --color-soft: #aaa6b3;
-
-  // Surfaces
-  --color-canvas: #f7f5f2;
-  --color-surface: #fff;
-  --color-surface-soft: #f1eef8;
-  --color-line: #e7e3e0;
-
-  // Brand
-  --color-indigo: #5145a8;
-  --color-indigo-dark: #40368c;
-  --color-indigo-pale: #eeebfb;
-  --color-coral: #e58a72;
-
-  // Status
-  --color-danger: #c94b4b;
-  --color-danger-pale: #fff0ef;
-  --color-success: #347c61;
-
+  --ink: #252333;
+  --muted: #747181;
+  --soft: #aaa6b3;
+  --canvas: #f7f5f2;
+  --surface: #ffffff;
+  --surface-soft: #f1eef8;
+  --line: #e7e3e0;
+  --indigo: #5145a8;
+  --indigo-dark: #40368c;
+  --indigo-pale: #eeebfb;
+  --coral: #e58a72;
+  --danger: #c94b4b;
+  --danger-pale: #fff0ef;
+  --success: #347c61;
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 24px;
-
   --shadow-sm: 0 2px 12px rgba(49, 42, 71, 0.05);
   --shadow-md: 0 14px 50px rgba(49, 42, 71, 0.12);
-
-  --font-body: 'DM Sans', system-ui, sans-serif;
-  --font-heading: 'Manrope', system-ui, sans-serif;
 }
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
+}
+
+html {
+  background: var(--canvas);
 }
 
 body {
   margin: 0;
-  font-family: var(--font-body);
-  color: var(--color-ink);
-  background: var(--color-canvas);
+  color: var(--ink);
+  background: var(--canvas);
+  font-family: 'DM Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  margin: 0;
-  font-family: var(--font-heading);
-  letter-spacing: -0.035em;
-}
-
-img {
-  display: block;
-  max-width: 100%;
 }
 
 button,
 input,
 textarea {
   font: inherit;
+}
+
+button {
   color: inherit;
 }
 
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(81, 69, 168, 0.2);
+  outline-offset: 2px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: -0.035em;
+}
+
 .eyebrow {
+  margin: 0 0 8px;
+  color: var(--indigo);
   font-size: 11px;
-  text-transform: uppercase;
-  color: var(--color-indigo);
+  line-height: 1;
+  letter-spacing: 0.14em;
+  font-weight: 800;
+}
+
+.eyebrow.light {
+  color: #d9d4ff;
+}
+
+// Buttons
+.button {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.18s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+    box-shadow: none;
+  }
+
+  &.full {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+.button-primary {
+  background: var(--indigo);
+  color: white;
+  box-shadow: 0 8px 20px rgba(81, 69, 168, 0.18);
+
+  &:hover {
+    background: var(--indigo-dark);
+  }
+}
+
+.button-secondary {
+  background: white;
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    border-color: #c9c3df;
+    background: #faf9fd;
+  }
+}
+
+.button-ghost {
+  background: transparent;
+}
+
+.button-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-soft);
+    color: var(--indigo);
+  }
+
+  &.small {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  animation: spin 0.7s linear infinite;
+
+  &.dark {
+    border-color: rgba(81, 69, 168, 0.2);
+    border-top-color: var(--indigo);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Form fields
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 17px;
+  position: relative;
+  flex: 1;
+
+  > span:first-child {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: white;
+    color: var(--ink);
+    transition: 0.18s ease;
+  }
+
+  input {
+    height: 48px;
+    padding: 0 14px;
+  }
+
+  textarea {
+    min-height: 112px;
+    padding: 13px 14px;
+    resize: vertical;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--soft);
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: var(--indigo);
+    box-shadow: 0 0 0 3px rgba(81, 69, 168, 0.1);
+    outline: 0;
+  }
+
+  small {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  // Not in the prototype (it relies on native validation); added for accessible field errors.
+  small.field-error {
+    color: var(--danger);
+  }
+}
+
+.field-row {
+  display: flex;
+  gap: 14px;
+}
+
+.input-shell {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  transition: 0.18s ease;
+
+  &:focus-within {
+    border-color: var(--indigo);
+    box-shadow: 0 0 0 3px rgba(81, 69, 168, 0.1);
+  }
+
+  .field & input {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+.input-action {
+  width: 46px;
+  height: 46px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.text-action {
+  border: 0;
+  background: transparent;
+  color: var(--indigo);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.inline-error {
+  padding: 11px 12px;
+  margin-bottom: 14px;
+  border: 1px solid #f1caca;
+  border-radius: 10px;
+  background: var(--danger-pale);
+  color: var(--danger);
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .field-row {
+    flex-direction: column;
+    gap: 0;
+  }
 }
