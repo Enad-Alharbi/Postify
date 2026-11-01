@@ -59,6 +59,8 @@ public class ProfileService(PostifyContext dbContext, IFileService fileService) 
         return new UpdateProfileResultDto(Success: true,
                     Message: "Profile Updated Successfully!",
                     UpdatedProfile: new UserProfileDto(
+                                    UserId: user.Id,
+                                    UserName: user.UserName,
                                     FirstName: user.FirstName,
                                     LastName: user.LastName,
                                     Bio: profile.Bio,
@@ -80,7 +82,9 @@ public class ProfileService(PostifyContext dbContext, IFileService fileService) 
     private async Task<UserProfileDto?> GetUserProfile(Guid userId)
     {
         var userProfile = await dbContext.Profiles.Where(profile => profile.UserId == userId)
-                                .Select(profile => new UserProfileDto(FirstName: profile.User.FirstName,
+                                .Select(profile => new UserProfileDto(UserId: profile.UserId,
+                                                                      UserName: profile.User.UserName,
+                                                                      FirstName: profile.User.FirstName,
                                                                       LastName: profile.User.LastName,
                                                                       Bio: profile.Bio,
                                                                       ProfilePicturePath: profile.ProfilePicturePath))
