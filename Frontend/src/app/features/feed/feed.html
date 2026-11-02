@@ -12,7 +12,7 @@
 
   @if (auth.currentUser(); as user) {
     <section class="composer-card">
-      <app-avatar [firstName]="user.firstName" [lastName]="user.lastName" [userId]="user.id" />
+      <app-my-avatar />
       <button type="button" class="composer-prompt" (click)="createPost.show()">Share a moment with your community…</button>
       <button type="button" class="button button-primary composer-button" (click)="createPost.show()" aria-label="Create Post">
         <app-icon name="plus" [size]="18" /><span>Create Post</span>

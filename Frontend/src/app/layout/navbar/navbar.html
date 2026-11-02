@@ -12,7 +12,7 @@
     <div class="header-user">
       @if (auth.currentUser(); as user) {
         <a class="identity" routerLink="/profile">
-          <app-avatar [firstName]="user.firstName" [lastName]="user.lastName" [userId]="user.id" size="sm" />
+          <app-my-avatar size="sm" />
           <span>
             <strong>{{ user.firstName }} {{ user.lastName }}</strong>
             <small>{{ '@' + user.userName }}</small>

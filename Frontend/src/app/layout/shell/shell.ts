@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CreatePostDialog } from '../../core/services/create-post-dialog.service';
+import { ProfileService } from '../../core/services/profile.service';
 import { CreatePostModal } from '../../features/posts/create-post-modal/create-post-modal';
 import { Toast } from '../../shared/toast/toast';
 import { Navbar } from '../navbar/navbar';
@@ -32,6 +33,12 @@ import { Navbar } from '../navbar/navbar';
     }
   `,
 })
-export class Shell {
+export class Shell implements OnInit {
+  private readonly profiles = inject(ProfileService);
   protected readonly createPost = inject(CreatePostDialog);
+
+  // The shell exists only while signed in, so this runs after login and on every refresh.
+  ngOnInit(): void {
+    this.profiles.loadMyProfile();
+  }
 }

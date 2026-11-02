@@ -11,14 +11,14 @@ import { AuthService } from '../../../core/services/auth.service';
 import { CreatePostDialog } from '../../../core/services/create-post-dialog.service';
 import { PostService } from '../../../core/services/post.service';
 import { getApiErrorMessage } from '../../../core/utils/api-error';
-import { Avatar } from '../../../shared/avatar/avatar';
+import { MyAvatar } from '../../../shared/avatar/my-avatar';
 import { Icon } from '../../../shared/icon/icon';
 import { Modal } from '../../../shared/modal/modal';
 import { ToastService } from '../../../shared/toast/toast.service';
 
 @Component({
   selector: 'app-create-post-modal',
-  imports: [Avatar, Icon, Modal],
+  imports: [Icon, Modal, MyAvatar],
   templateUrl: './create-post-modal.html',
   styleUrl: './create-post-modal.scss',
 })

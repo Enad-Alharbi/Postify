@@ -5,13 +5,13 @@ import { AuthService } from '../../core/services/auth.service';
 import { CreatePostDialog } from '../../core/services/create-post-dialog.service';
 import { PostService } from '../../core/services/post.service';
 import { PagedList } from '../../core/utils/paged-list';
-import { Avatar } from '../../shared/avatar/avatar';
+import { MyAvatar } from '../../shared/avatar/my-avatar';
 import { Icon } from '../../shared/icon/icon';
 import { PostCard } from './post-card/post-card';
 
 @Component({
   selector: 'app-feed',
-  imports: [Avatar, Icon, PostCard],
+  imports: [Icon, MyAvatar, PostCard],
   templateUrl: './feed.html',
   styleUrl: './feed.scss',
 })

@@ -12,6 +12,7 @@ import { toApiUrl } from '../../core/utils/api-url';
 import { PagedList } from '../../core/utils/paged-list';
 import { ActionMenu, ActionMenuItem } from '../../shared/action-menu/action-menu';
 import { Avatar } from '../../shared/avatar/avatar';
+import { MyAvatar } from '../../shared/avatar/my-avatar';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { Icon } from '../../shared/icon/icon';
 import { TimeAgoPipe } from '../../shared/time-ago/time-ago.pipe';
@@ -20,7 +21,7 @@ import { EditCommentModal } from './edit-comment-modal/edit-comment-modal';
 
 @Component({
   selector: 'app-post-details',
-  imports: [RouterLink, ActionMenu, Avatar, ConfirmDialog, EditCommentModal, Icon, TimeAgoPipe],
+  imports: [RouterLink, ActionMenu, Avatar, ConfirmDialog, EditCommentModal, Icon, MyAvatar, TimeAgoPipe],
   templateUrl: './post-details.html',
   styleUrl: './post-details.scss',
 })

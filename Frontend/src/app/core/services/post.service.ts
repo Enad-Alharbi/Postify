@@ -19,6 +19,16 @@ export class PostService {
     return this.http.get<PaginatedResponse<Post>>(this.apiUrl, { params });
   }
 
+  getMyPosts(pageNumber: number, pageSize = MAX_PAGE_SIZE): Observable<PaginatedResponse<Post>> {
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
+    return this.http.get<PaginatedResponse<Post>>(`${this.apiUrl}/me`, { params });
+  }
+
+  getUserPosts(userId: string, pageNumber: number, pageSize = MAX_PAGE_SIZE): Observable<PaginatedResponse<Post>> {
+    const params = new HttpParams().set('pageNumber', pageNumber).set('pageSize', pageSize);
+    return this.http.get<PaginatedResponse<Post>>(`${this.apiUrl}/user/${userId}`, { params });
+  }
+
   getPost(postId: string): Observable<Post> {
     return this.http.get<Post>(`${this.apiUrl}/${postId}`);
   }

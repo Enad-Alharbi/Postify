@@ -7,7 +7,7 @@
 >
   @if (auth.currentUser(); as user) {
     <div class="modal-author">
-      <app-avatar [firstName]="user.firstName" [lastName]="user.lastName" [userId]="user.id" />
+      <app-my-avatar />
       <div>
         <strong>{{ user.firstName }} {{ user.lastName }}</strong>
         <span>{{ '@' + user.userName }}</span>

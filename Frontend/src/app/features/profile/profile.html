@@ -1,0 +1,77 @@
+<main class="profile-page">
+  @if (!isMine()) {
+    <a class="back-link" routerLink="/"><app-icon name="arrow" />Back to feed</a>
+  }
+
+  @if (loading()) {
+    <div class="page-state"><span class="spinner dark"></span>Loading profile…</div>
+  } @else if (notFound()) {
+    <div class="empty-state">
+      <h2>Profile not found</h2>
+      <p>This account may not exist, or the link is wrong.</p>
+      <a class="button button-secondary" routerLink="/">Back to feed</a>
+    </div>
+  } @else if (error()) {
+    <div class="empty-state">
+      <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+      <button type="button" class="button button-secondary" (click)="loadProfile()">Try again</button>
+    </div>
+  } @else if (profile(); as p) {
+    <section class="profile-hero">
+      <div class="profile-orbit">
+        <app-avatar [firstName]="p.firstName" [lastName]="p.lastName" [userId]="p.userId" [picturePath]="p.profilePicturePath" size="xl" />
+      </div>
+      <div class="profile-copy">
+        <p class="eyebrow">{{ isMine() ? 'YOUR PROFILE' : 'CREATOR PROFILE' }}</p>
+        <h1>{{ p.firstName }} {{ p.lastName }}</h1>
+        <span>{{ '@' + p.userName }}</span>
+        @if (p.bio) {
+          <p>{{ p.bio }}</p>
+        } @else if (isMine()) {
+          <p class="bio-empty">You haven't added a bio yet.</p>
+        }
+      </div>
+    </section>
+
+    <section class="profile-posts">
+      <div class="profile-section-head">
+        <div>
+          <h2>{{ isMine() ? 'My posts' : p.firstName + "'s posts" }}</h2>
+          @if (posts.loaded()) {
+            <p>{{ posts.totalCount() }} {{ posts.totalCount() === 1 ? 'moment' : 'moments' }} shared</p>
+          }
+        </div>
+      </div>
+
+      @if (posts.items().length) {
+        <div class="photo-grid">
+          @for (post of posts.items(); track post.id) {
+            <a class="grid-photo" [routerLink]="['/posts', post.id]" [attr.aria-label]="'Open post' + (post.caption ? ': ' + post.caption : '')">
+              <img [src]="imageUrl(post)" alt="" loading="lazy" />
+              <span><app-icon name="comment" [size]="17" />Open post</span>
+            </a>
+          }
+        </div>
+      } @else if (posts.loaded() && !posts.error()) {
+        <div class="empty-state">
+          <h2>No posts yet</h2>
+          <p>{{ isMine() ? 'Moments you share will show up here.' : p.firstName + " hasn't shared anything yet." }}</p>
+        </div>
+      }
+
+      <div class="load-more" aria-live="polite">
+        @if (posts.error()) {
+          <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ posts.error() }}</div>
+        }
+
+        @if (posts.loading()) {
+          <span><span class="spinner dark"></span>{{ posts.loaded() ? 'Loading more…' : 'Loading posts…' }}</span>
+        } @else if (posts.error()) {
+          <button type="button" class="button button-secondary" (click)="posts.loadMore()">Try again</button>
+        } @else if (posts.hasNextPage()) {
+          <button type="button" class="button button-secondary" (click)="posts.loadMore()">Load more posts</button>
+        }
+      </div>
+    </section>
+  }
+</main>

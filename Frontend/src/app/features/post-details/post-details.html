@@ -97,7 +97,7 @@
           }
           <div class="comment-composer">
             @if (auth.currentUser(); as user) {
-              <app-avatar [firstName]="user.firstName" [lastName]="user.lastName" [userId]="user.id" size="sm" />
+              <app-my-avatar size="sm" />
             }
             <textarea
               [value]="draft()"

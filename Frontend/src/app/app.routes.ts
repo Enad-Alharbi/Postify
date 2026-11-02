@@ -29,6 +29,16 @@ export const routes: Routes = [
         title: 'Post · Postify',
         loadComponent: () => import('./features/post-details/post-details').then((m) => m.PostDetails),
       },
+      {
+        path: 'profile',
+        title: 'My profile · Postify',
+        loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
+      },
+      {
+        path: 'users/:userId',
+        title: 'Profile · Postify',
+        loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
