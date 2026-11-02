@@ -1,0 +1,21 @@
+<button
+  type="button"
+  class="icon-button"
+  [class.small]="small()"
+  (click)="open.set(!open())"
+  [attr.aria-label]="label()"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="open()"
+>
+  <app-icon name="more" [size]="small() ? 17 : 20" />
+</button>
+
+@if (open()) {
+  <div class="action-menu" [class.small]="small()" role="menu">
+    @for (item of items(); track item.id) {
+      <button type="button" role="menuitem" [class.danger-text]="item.danger" (click)="select(item.id)">
+        <app-icon [name]="item.icon" />{{ item.label }}
+      </button>
+    }
+  </div>
+}

@@ -59,4 +59,19 @@ export class PagedList<T extends { id: string }> {
       this.totalCount.update((count) => count + 1);
     }
   }
+
+  // For an item the user just edited.
+  replace(item: T): void {
+    this.items.update((items) => items.map((existing) => (existing.id === item.id ? item : existing)));
+  }
+
+  // For an item the user just deleted.
+  remove(id: string): void {
+    const exists = this.items().some((item) => item.id === id);
+    this.items.update((items) => items.filter((item) => item.id !== id));
+
+    if (exists) {
+      this.totalCount.update((count) => Math.max(0, count - 1));
+    }
+  }
 }

@@ -1,0 +1,22 @@
+<app-modal title="Edit Comment" subtitle="Make changes to your comment below." [closable]="!saving()" (closed)="closed.emit()">
+  <label class="field modal-field">
+    <span>Comment</span>
+    <textarea [value]="text()" (input)="onInput($event)" [attr.maxlength]="maxLength" [disabled]="saving()"></textarea>
+    <em [class.warn]="text().length > maxLength - 20">{{ text().length }}/{{ maxLength }}</em>
+  </label>
+
+  @if (error()) {
+    <div class="inline-error modal-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+  }
+
+  <div class="modal-actions">
+    <button type="button" class="button button-secondary" (click)="closed.emit()" [disabled]="saving()">Cancel</button>
+    <button type="button" class="button button-primary" (click)="save()" [disabled]="!canSave()">
+      @if (saving()) {
+        <span class="spinner"></span>Saving…
+      } @else {
+        Save Changes
+      }
+    </button>
+  </div>
+</app-modal>

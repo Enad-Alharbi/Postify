@@ -1,0 +1,23 @@
+.delete-content {
+  padding: 26px 22px 20px;
+  text-align: center;
+
+  > p {
+    max-width: 380px;
+    margin: auto;
+    color: var(--muted);
+    line-height: 1.55;
+    font-size: 14px;
+  }
+}
+
+.danger-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: var(--danger-pale);
+  color: var(--danger);
+  display: grid;
+  place-items: center;
+}

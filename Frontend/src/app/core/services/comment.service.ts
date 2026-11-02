@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Comment, CreateCommentResponse } from '../models/comment.models';
+import { Comment, CreateCommentResponse, UpdateCommentResponse } from '../models/comment.models';
 import { MAX_PAGE_SIZE, PaginatedResponse } from '../models/pagination.models';
 
 @Injectable({ providedIn: 'root' })
@@ -19,5 +19,16 @@ export class CommentService {
     return this.http
       .post<CreateCommentResponse>(`${this.apiUrl}/Posts/${postId}/Comments`, { content })
       .pipe(map((response) => response.comment!));
+  }
+
+  // 403 (not the owner) and 404 come back as errors with a { status, message } body.
+  updateComment(commentId: string, content: string): Observable<Comment> {
+    return this.http
+      .put<UpdateCommentResponse>(`${this.apiUrl}/Comments/${commentId}`, { content })
+      .pipe(map((response) => response.comment!));
+  }
+
+  deleteComment(commentId: string): Observable<void> {
+    return this.http.delete(`${this.apiUrl}/Comments/${commentId}`).pipe(map(() => undefined));
   }
 }

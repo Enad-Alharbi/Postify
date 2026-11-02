@@ -16,5 +16,11 @@ export interface CreateCommentResponse {
   comment: Comment | null;
 }
 
+export interface UpdateCommentResponse {
+  status: number;
+  message: string | null;
+  comment: Comment | null;
+}
+
 // Backend CreateCommentDto / UpdateCommentDto: [StringLength(250)].
 export const COMMENT_MAX_LENGTH = 250;

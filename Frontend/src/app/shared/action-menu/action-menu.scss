@@ -1,0 +1,45 @@
+:host {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.action-menu {
+  position: absolute;
+  z-index: 12;
+  right: 0;
+  top: 42px;
+  width: 170px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  box-shadow: var(--shadow-md);
+
+  // The prototype's comment menu sits closer to its smaller trigger.
+  &.small {
+    top: 31px;
+  }
+
+  button {
+    width: 100%;
+    min-height: 40px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-soft);
+    }
+  }
+
+  .danger-text {
+    color: var(--danger);
+  }
+}

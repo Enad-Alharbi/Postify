@@ -1,0 +1,22 @@
+<app-modal [title]="title()" [closable]="!loading()" (closed)="cancelled.emit()">
+  <div class="delete-content">
+    <span class="danger-icon"><app-icon name="trash" [size]="25" /></span>
+    <p>{{ message() }}</p>
+    <ng-content />
+  </div>
+
+  @if (error()) {
+    <div class="inline-error modal-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+  }
+
+  <div class="modal-actions">
+    <button type="button" class="button button-secondary" (click)="cancelled.emit()" [disabled]="loading()">Cancel</button>
+    <button type="button" class="button button-danger" (click)="confirmed.emit()" [disabled]="loading()">
+      @if (loading()) {
+        <span class="spinner"></span>{{ loadingLabel() }}
+      } @else {
+        {{ confirmLabel() }}
+      }
+    </button>
+  </div>
+</app-modal>
