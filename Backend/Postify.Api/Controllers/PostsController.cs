@@ -74,8 +74,13 @@ namespace Postify.Api.Controllers
             return Ok(result);
         }
 
+        // Kestrel's default body limit (~28.6MB) is lower than the 50MB post image limit in FileService,
+        // so raise it for this endpoint: 50MB image + room for the caption and multipart overhead.
+        const long CreatePostMaxRequestSize = 51 * 1024 * 1024;
+
         [Authorize]
         [HttpPost]
+        [RequestSizeLimit(CreatePostMaxRequestSize)]
         public async Task<ActionResult<CreatePostResultDto>> CreatePost([FromForm] CreatePostDto request)
         {
             if(!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))

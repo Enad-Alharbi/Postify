@@ -1,5 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, DestroyRef, OnDestroy, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { CreatePostDialog } from '../../core/services/create-post-dialog.service';
 import { PostActionsDialog } from '../../core/services/post-actions-dialog.service';
 import { ProfileService } from '../../core/services/profile.service';
@@ -42,13 +44,33 @@ import { Navbar } from '../navbar/navbar';
     }
   `,
 })
-export class Shell implements OnInit {
+export class Shell implements OnInit, OnDestroy {
   private readonly profiles = inject(ProfileService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly createPost = inject(CreatePostDialog);
   protected readonly postActions = inject(PostActionsDialog);
 
   // The shell exists only while signed in, so this runs after login and on every refresh.
   ngOnInit(): void {
     this.profiles.loadMyProfile();
+
+    // Don't leave a modal open over a different page (for example after browser Back).
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationStart),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.closeDialogs());
+  }
+
+  // The dialog state lives in root services, so clear it on logout or it would reopen after the next login.
+  ngOnDestroy(): void {
+    this.closeDialogs();
+  }
+
+  private closeDialogs(): void {
+    this.createPost.hide();
+    this.postActions.close();
   }
 }

@@ -11,7 +11,7 @@
         placeholder="maya@example.com"
         autocomplete="username"
         [attr.aria-invalid]="showError('emailOrUserName')"
-        aria-describedby="login-identifier-error"
+        [attr.aria-describedby]="showError('emailOrUserName') ? 'login-identifier-error' : null"
       />
       @if (showError('emailOrUserName')) {
         <small class="field-error" id="login-identifier-error">Enter your email or username.</small>
@@ -27,7 +27,7 @@
           placeholder="Enter your password"
           autocomplete="current-password"
           [attr.aria-invalid]="showError('password')"
-          aria-describedby="login-password-error"
+          [attr.aria-describedby]="showError('password') ? 'login-password-error' : null"
         />
         <button
           type="button"

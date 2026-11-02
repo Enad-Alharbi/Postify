@@ -22,8 +22,9 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
             throw new ArgumentException("The uploaded file must be 5MB or less");
         }
 
-        var pictureExtension = Path.GetExtension(picture.FileName);
-        
+        // Lowercased so ".JPG" is accepted and saved files always use a lowercase extension.
+        var pictureExtension = Path.GetExtension(picture.FileName).ToLowerInvariant();
+
 
         if(!allowedExtensions.Contains(pictureExtension))
         {
@@ -78,7 +79,8 @@ public class FileService(IWebHostEnvironment webHostEnvironment) : IFileService
             throw new ArgumentException("The uploaded file is empty!");
         }
 
-        var imageExtension = Path.GetExtension(image.FileName);
+        // Lowercased so ".JPG" is accepted and saved files always use a lowercase extension.
+        var imageExtension = Path.GetExtension(image.FileName).ToLowerInvariant();
 
         if(!allowedExtensions.Contains(imageExtension))
         {

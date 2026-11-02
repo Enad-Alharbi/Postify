@@ -3,6 +3,8 @@ import { Icon } from '../icon/icon';
 
 let nextId = 0;
 
+const FOCUSABLE = 'a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])';
+
 // Dialog shell from the prototype: header with title and close, projected body and actions.
 @Component({
   selector: 'app-modal',
@@ -11,6 +13,8 @@ let nextId = 0;
   styleUrl: './modal.scss',
   host: {
     '(document:keydown.escape)': 'requestClose()',
+    '(keydown.tab)': 'trapFocus($event)',
+    '(keydown.shift.tab)': 'trapFocus($event)',
   },
 })
 export class Modal implements OnInit, AfterViewInit, OnDestroy {
@@ -42,6 +46,32 @@ export class Modal implements OnInit, AfterViewInit, OnDestroy {
   protected requestClose(): void {
     if (this.closable()) {
       this.closed.emit();
+    }
+  }
+
+  // Keeps Tab / Shift+Tab cycling inside the dialog instead of reaching the page behind it.
+  protected trapFocus(event: Event): void {
+    const dialog = this.dialog().nativeElement;
+    const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+      (element) => !element.hasAttribute('disabled') && element.offsetParent !== null,
+    );
+
+    if (!focusable.length) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+    const backwards = (event as KeyboardEvent).shiftKey;
+
+    if (backwards && (active === first || active === dialog)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!backwards && active === last) {
+      event.preventDefault();
+      first.focus();
     }
   }
 

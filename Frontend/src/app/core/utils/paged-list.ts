@@ -15,6 +15,10 @@ export class PagedList<T extends { id: string }> {
   readonly error = signal('');
 
   private lastPage = 0;
+  private pageSize = 0;
+  // Local adds/removes since the last load shift the backend's pages: removals pull
+  // unseen items back onto pages we already loaded, so the next fetch has to step back.
+  private shift = 0;
 
   constructor(
     private readonly fetchPage: (pageNumber: number) => Observable<PaginatedResponse<T>>,
@@ -30,15 +34,17 @@ export class PagedList<T extends { id: string }> {
     this.loading.set(true);
     this.error.set('');
 
-    this.fetchPage(this.lastPage + 1)
+    this.fetchPage(this.nextPageNumber())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (page) => {
-          // Items added since the last page shift later pages, so skip anything already shown.
+          // Shifted pages can repeat items we already show, so skip those.
           const shownIds = new Set(this.items().map((item) => item.id));
           this.items.update((items) => [...items, ...page.items.filter((item) => !shownIds.has(item.id))]);
           this.totalCount.set(page.totalCount);
           this.lastPage = page.pageNumber;
+          this.pageSize = page.pageSize;
+          this.shift = 0;
           this.hasNextPage.set(page.hasNextPage);
           this.loaded.set(true);
           this.loading.set(false);
@@ -57,6 +63,7 @@ export class PagedList<T extends { id: string }> {
 
     if (isNew) {
       this.totalCount.update((count) => count + 1);
+      this.shift++;
     }
   }
 
@@ -72,6 +79,18 @@ export class PagedList<T extends { id: string }> {
 
     if (exists) {
       this.totalCount.update((count) => Math.max(0, count - 1));
+      this.shift--;
     }
+  }
+
+  // The page holding the first item we haven't loaded yet. Without removals that's simply lastPage + 1;
+  // after k removals it starts k positions earlier, possibly on a page we already loaded.
+  private nextPageNumber(): number {
+    if (this.lastPage === 0 || this.shift >= 0) {
+      return this.lastPage + 1;
+    }
+
+    const firstUnseenIndex = Math.max(0, this.lastPage * this.pageSize + this.shift);
+    return Math.floor(firstUnseenIndex / this.pageSize) + 1;
   }
 }
