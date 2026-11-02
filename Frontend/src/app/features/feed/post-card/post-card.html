@@ -1,0 +1,26 @@
+@let p = post();
+
+<article class="post-card">
+  <div class="post-header">
+    <a class="author-block" [routerLink]="authorLink()">
+      <app-avatar [firstName]="p.firstName" [lastName]="p.lastName" [userId]="p.userId" [picturePath]="p.profilePicturePath" />
+      <span>
+        <strong>{{ p.firstName }} {{ p.lastName }}</strong>
+        <span>{{ '@' + p.userName }} · {{ p.createdAt | timeAgo }}</span>
+      </span>
+    </a>
+  </div>
+
+  @if (p.caption) {
+    <a class="post-copy" [routerLink]="detailsLink()">{{ p.caption }}</a>
+  }
+
+  <a class="post-image" [routerLink]="detailsLink()" aria-label="Open post details">
+    <img [src]="imageUrl()" [alt]="p.caption || 'Post by ' + p.firstName" loading="lazy" />
+  </a>
+
+  <div class="post-footer">
+    <a class="comments-link" [routerLink]="detailsLink()"><app-icon name="comment" />View comments</a>
+    <a class="view-link" [routerLink]="detailsLink()">View post <span>→</span></a>
+  </div>
+</article>

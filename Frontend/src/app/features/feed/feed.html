@@ -1,0 +1,38 @@
+<main class="page">
+  <section class="feed-heading">
+    <div>
+      <p class="eyebrow">YOUR COMMUNITY</p>
+      <h1>{{ greeting }}, {{ auth.currentUser()?.firstName }}.</h1>
+      <p>Fresh moments from people you know.</p>
+    </div>
+  </section>
+
+  @if (posts().length) {
+    <div class="feed-list">
+      @for (post of posts(); track post.id) {
+        <app-post-card [post]="post" />
+      }
+    </div>
+  } @else if (loaded() && !error()) {
+    <div class="empty-state">
+      <h2>No posts yet</h2>
+      <p>When people share moments, they'll show up here.</p>
+    </div>
+  }
+
+  <div class="load-more" aria-live="polite">
+    @if (error()) {
+      <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+    }
+
+    @if (loading()) {
+      <span><span class="spinner dark"></span>{{ loaded() ? 'Loading more…' : 'Loading posts…' }}</span>
+    } @else if (error()) {
+      <button type="button" class="button button-secondary" (click)="loadMore()">Try again</button>
+    } @else if (hasNextPage()) {
+      <button type="button" class="button button-secondary" (click)="loadMore()">Load more posts</button>
+    } @else if (posts().length) {
+      <span><app-icon name="check" [size]="16" />You’re all caught up</span>
+    }
+  </div>
+</main>

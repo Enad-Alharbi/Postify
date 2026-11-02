@@ -17,8 +17,14 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [authGuard],
-    title: 'Postify',
-    loadComponent: () => import('./features/feed/feed').then((m) => m.Feed),
+    loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
+    children: [
+      {
+        path: '',
+        title: 'Postify',
+        loadComponent: () => import('./features/feed/feed').then((m) => m.Feed),
+      },
+    ],
   },
   { path: '**', redirectTo: '' },
 ];
