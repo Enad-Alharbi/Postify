@@ -24,6 +24,11 @@ export const routes: Routes = [
         title: 'Postify',
         loadComponent: () => import('./features/feed/feed').then((m) => m.Feed),
       },
+      {
+        path: 'posts/:postId',
+        title: 'Post · Postify',
+        loadComponent: () => import('./features/post-details/post-details').then((m) => m.PostDetails),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

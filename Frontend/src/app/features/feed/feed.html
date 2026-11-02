@@ -20,13 +20,13 @@
     </section>
   }
 
-  @if (posts().length) {
+  @if (posts.items().length) {
     <div class="feed-list">
-      @for (post of posts(); track post.id) {
+      @for (post of posts.items(); track post.id) {
         <app-post-card [post]="post" />
       }
     </div>
-  } @else if (loaded() && !error()) {
+  } @else if (posts.loaded() && !posts.error()) {
     <div class="empty-state">
       <h2>No posts yet</h2>
       <p>When people share moments, they'll show up here.</p>
@@ -34,17 +34,17 @@
   }
 
   <div class="load-more" aria-live="polite">
-    @if (error()) {
-      <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+    @if (posts.error()) {
+      <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ posts.error() }}</div>
     }
 
-    @if (loading()) {
-      <span><span class="spinner dark"></span>{{ loaded() ? 'Loading more…' : 'Loading posts…' }}</span>
-    } @else if (error()) {
-      <button type="button" class="button button-secondary" (click)="loadMore()">Try again</button>
-    } @else if (hasNextPage()) {
-      <button type="button" class="button button-secondary" (click)="loadMore()">Load more posts</button>
-    } @else if (posts().length) {
+    @if (posts.loading()) {
+      <span><span class="spinner dark"></span>{{ posts.loaded() ? 'Loading more…' : 'Loading posts…' }}</span>
+    } @else if (posts.error()) {
+      <button type="button" class="button button-secondary" (click)="posts.loadMore()">Try again</button>
+    } @else if (posts.hasNextPage()) {
+      <button type="button" class="button button-secondary" (click)="posts.loadMore()">Load more posts</button>
+    } @else if (posts.items().length) {
       <span><app-icon name="check" [size]="16" />You’re all caught up</span>
     }
   </div>

@@ -1,0 +1,114 @@
+<main class="detail-page">
+  <a class="back-link" routerLink="/"><app-icon name="arrow" />Back to feed</a>
+
+  @if (postLoading()) {
+    <div class="page-state"><span class="spinner dark"></span>Loading post…</div>
+  } @else if (postNotFound()) {
+    <div class="empty-state">
+      <h2>Post not found</h2>
+      <p>It may have been deleted, or the link is wrong.</p>
+      <a class="button button-secondary" routerLink="/">Back to feed</a>
+    </div>
+  } @else if (postError()) {
+    <div class="empty-state">
+      <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ postError() }}</div>
+      <button type="button" class="button button-secondary" (click)="loadPost()">Try again</button>
+    </div>
+  } @else if (post(); as p) {
+    <div class="detail-shell">
+      <section class="detail-media">
+        <img [src]="imageUrl()" [alt]="p.caption || 'Post by ' + p.firstName" />
+        <span>Photo by {{ p.firstName }} {{ p.lastName }}</span>
+      </section>
+
+      <section class="comments-panel">
+        <div class="detail-post-head">
+          <a class="author-block" [routerLink]="['/users', p.userId]">
+            <app-avatar [firstName]="p.firstName" [lastName]="p.lastName" [userId]="p.userId" [picturePath]="p.profilePicturePath" />
+            <span>
+              <strong>{{ p.firstName }} {{ p.lastName }}</strong>
+              <span>{{ '@' + p.userName }} · {{ p.createdAt | timeAgo }}</span>
+            </span>
+          </a>
+        </div>
+
+        @if (p.caption) {
+          <p class="detail-caption">{{ p.caption }}</p>
+        }
+
+        <div class="section-title">
+          <h2>Comments</h2>
+          @if (comments.loaded()) {
+            <span>{{ comments.totalCount() }}</span>
+          }
+        </div>
+
+        <div class="comment-list" aria-live="polite">
+          @for (comment of comments.items(); track comment.id) {
+            <div class="comment">
+              <a [routerLink]="['/users', comment.userId]" tabindex="-1" aria-hidden="true">
+                <app-avatar
+                  [firstName]="comment.firstName"
+                  [lastName]="comment.lastName"
+                  [userId]="comment.userId"
+                  [picturePath]="comment.profilePicturePath"
+                  size="sm"
+                />
+              </a>
+              <div class="comment-body">
+                <div>
+                  <a [routerLink]="['/users', comment.userId]"><strong>{{ comment.firstName }} {{ comment.lastName }}</strong></a>
+                  <span>{{ comment.createdAt | timeAgo }}</span>
+                </div>
+                <p>{{ comment.content }}</p>
+              </div>
+            </div>
+          } @empty {
+            @if (comments.loaded() && !comments.error()) {
+              <p class="no-comments">No comments yet. Start the conversation.</p>
+            }
+          }
+
+          @if (comments.error()) {
+            <div class="inline-error comments-error" role="alert"><app-icon name="alert" [size]="18" />{{ comments.error() }}</div>
+          }
+
+          <!-- Inside the scroll area so it sits after the last loaded comment. -->
+          @if (comments.loading()) {
+            <span class="load-comments"><span class="spinner dark"></span>Loading comments…</span>
+          } @else if (comments.error()) {
+            <button type="button" class="load-comments" (click)="comments.loadMore()">Try again</button>
+          } @else if (comments.hasNextPage()) {
+            <button type="button" class="load-comments" (click)="comments.loadMore()">Load more comments</button>
+          }
+        </div>
+
+        <div class="comment-composer-wrap">
+          @if (sendError()) {
+            <div class="inline-error" role="alert"><app-icon name="alert" [size]="18" />{{ sendError() }}</div>
+          }
+          <div class="comment-composer">
+            @if (auth.currentUser(); as user) {
+              <app-avatar [firstName]="user.firstName" [lastName]="user.lastName" [userId]="user.id" size="sm" />
+            }
+            <textarea
+              [value]="draft()"
+              (input)="onDraftInput($event)"
+              [attr.maxlength]="commentMaxLength"
+              [disabled]="sending()"
+              placeholder="Add a thoughtful comment…"
+              aria-label="Comment"
+            ></textarea>
+            <button type="button" class="button button-primary" (click)="sendComment()" [disabled]="!canSend()">
+              @if (sending()) {
+                <span class="spinner"></span>
+              } @else {
+                Post
+              }
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+</main>

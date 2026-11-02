@@ -19,6 +19,10 @@ export class PostService {
     return this.http.get<PaginatedResponse<Post>>(this.apiUrl, { params });
   }
 
+  getPost(postId: string): Observable<Post> {
+    return this.http.get<Post>(`${this.apiUrl}/${postId}`);
+  }
+
   createPost(image: File, caption: string): Observable<Post> {
     // Field names must match CreatePostDto. The browser sets the multipart Content-Type itself.
     const body = new FormData();

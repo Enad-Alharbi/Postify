@@ -1,10 +1,10 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Post } from '../../core/models/post.models';
 import { AuthService } from '../../core/services/auth.service';
 import { CreatePostDialog } from '../../core/services/create-post-dialog.service';
 import { PostService } from '../../core/services/post.service';
-import { getApiErrorMessage } from '../../core/utils/api-error';
+import { PagedList } from '../../core/utils/paged-list';
 import { Avatar } from '../../shared/avatar/avatar';
 import { Icon } from '../../shared/icon/icon';
 import { PostCard } from './post-card/post-card';
@@ -21,52 +21,20 @@ export class Feed implements OnInit {
   protected readonly auth = inject(AuthService);
   protected readonly createPost = inject(CreatePostDialog);
 
-  protected readonly posts = signal<Post[]>([]);
-  protected readonly loading = signal(false);
-  protected readonly loaded = signal(false);
-  protected readonly hasNextPage = signal(true);
-  protected readonly error = signal('');
+  protected readonly posts = new PagedList<Post>(
+    (pageNumber) => this.postService.getPosts(pageNumber),
+    this.destroyRef,
+    "Couldn't load posts. Please try again.",
+  );
   protected readonly greeting = getGreeting();
 
-  private lastPage = 0;
-
   ngOnInit(): void {
-    this.loadMore();
+    this.posts.loadMore();
 
     // A post created from the modal goes straight to the top of the feed.
-    this.postService.postCreated$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((created) => {
-      this.posts.update((posts) => [created, ...posts.filter((post) => post.id !== created.id)]);
-    });
-  }
-
-  protected loadMore(): void {
-    // Blocks duplicate requests while one is in flight.
-    if (this.loading() || !this.hasNextPage()) {
-      return;
-    }
-
-    this.loading.set(true);
-    this.error.set('');
-
-    this.postService
-      .getPosts(this.lastPage + 1)
+    this.postService.postCreated$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (page) => {
-          // New posts can shift later pages, so skip anything already shown.
-          const shownIds = new Set(this.posts().map((post) => post.id));
-          this.posts.update((posts) => [...posts, ...page.items.filter((post) => !shownIds.has(post.id))]);
-          this.lastPage = page.pageNumber;
-          this.hasNextPage.set(page.hasNextPage);
-          this.loaded.set(true);
-          this.loading.set(false);
-        },
-        // Already loaded posts stay on screen; the user can retry.
-        error: (err) => {
-          this.error.set(getApiErrorMessage(err, "Couldn't load posts. Please try again."));
-          this.loading.set(false);
-        },
-      });
+      .subscribe((created) => this.posts.prepend(created));
   }
 }
 
