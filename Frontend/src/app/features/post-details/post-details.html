@@ -1,5 +1,7 @@
 <main class="detail-page">
-  <a class="back-link" routerLink="/"><app-icon name="arrow" />Back to feed</a>
+  @if (backLink(); as back) {
+    <a class="back-link" [routerLink]="back.link"><app-icon name="arrow" />{{ back.label }}</a>
+  }
 
   @if (postLoading()) {
     <div class="page-state"><span class="spinner dark"></span>Loading post…</div>

@@ -80,6 +80,11 @@ a {
   }
 }
 
+.profile-hero > .button {
+  position: relative;
+  z-index: 1;
+}
+
 .profile-orbit {
   padding: 8px;
   border: 1px dashed #cfc8ed;
@@ -228,6 +233,11 @@ a {
     padding: 28px;
   }
 
+  .profile-hero > .button {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .photo-grid {
     grid-auto-rows: 210px;
   }
@@ -252,6 +262,11 @@ a {
 
   .profile-orbit {
     justify-self: center;
+  }
+
+  .profile-hero > .button {
+    grid-column: auto;
+    justify-self: stretch;
   }
 
   .profile-copy h1 {

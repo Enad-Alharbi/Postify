@@ -1,0 +1,57 @@
+.avatar-editor {
+  padding: 24px 22px 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+
+  p {
+    flex-basis: 100%;
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .text-action {
+    font-size: 11px;
+  }
+}
+
+// Same frame as the xl avatar, showing the not-yet-uploaded file.
+.avatar-preview {
+  flex: 0 0 auto;
+  width: 112px;
+  height: 112px;
+  overflow: hidden;
+  border: 5px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.field-row {
+  padding: 14px 22px 0;
+}
+
+@media (max-width: 600px) {
+  .avatar-editor {
+    align-items: flex-start;
+  }
+
+  .avatar-preview {
+    width: 94px;
+    height: 94px;
+  }
+}

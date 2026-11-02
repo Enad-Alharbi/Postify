@@ -31,6 +31,11 @@
           <p class="bio-empty">You haven't added a bio yet.</p>
         }
       </div>
+      @if (isMine()) {
+        <button type="button" class="button button-secondary" (click)="editing.set(true)">
+          <app-icon name="edit" [size]="18" />Edit Profile
+        </button>
+      }
     </section>
 
     <section class="profile-posts">
@@ -46,7 +51,7 @@
       @if (posts.items().length) {
         <div class="photo-grid">
           @for (post of posts.items(); track post.id) {
-            <a class="grid-photo" [routerLink]="['/posts', post.id]" [attr.aria-label]="'Open post' + (post.caption ? ': ' + post.caption : '')">
+            <a class="grid-photo" [routerLink]="['/posts', post.id]" [state]="{ from: 'profile' }" [attr.aria-label]="'Open post' + (post.caption ? ': ' + post.caption : '')">
               <img [src]="imageUrl(post)" alt="" loading="lazy" />
               <span><app-icon name="comment" [size]="17" />Open post</span>
             </a>
@@ -75,3 +80,7 @@
     </section>
   }
 </main>
+
+@if (editing() && profile(); as p) {
+  <app-edit-profile-modal [profile]="p" (saved)="onProfileSaved($event)" (closed)="editing.set(false)" />
+}

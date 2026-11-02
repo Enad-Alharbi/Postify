@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, computed, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { COMMENT_MAX_LENGTH, Comment } from '../../core/models/comment.models';
 import { Post } from '../../core/models/post.models';
 import { AuthService } from '../../core/services/auth.service';
@@ -39,6 +39,27 @@ export class PostDetails implements OnInit {
   protected readonly postLoading = signal(true);
   protected readonly postNotFound = signal(false);
   protected readonly postError = signal('');
+  // Profile grid links pass { from: 'profile' } as navigation state. It's read from the in-flight
+  // navigation, falling back to history.state, which the browser keeps across refreshes.
+  private readonly openedFromProfile =
+    ((inject(Router).currentNavigation()?.extras.state ?? history.state) as { from?: string } | null)?.from === 'profile';
+
+  protected readonly backLink = computed(() => {
+    const post = this.post();
+
+    if (!this.openedFromProfile || this.postNotFound() || this.postError()) {
+      return { label: 'Back to feed', link: ['/'] };
+    }
+
+    // Wait for the post so the label doesn't flash "Back to feed" first.
+    if (!post) {
+      return null;
+    }
+
+    const isMine = post.userId === this.auth.currentUser()?.id;
+    return { label: `Back to @${post.userName}`, link: isMine ? ['/profile'] : ['/users', post.userId] };
+  });
+
   protected readonly imageUrl = computed(() => {
     const post = this.post();
     return post ? toApiUrl(post.postImagePath) : '';

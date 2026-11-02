@@ -1,16 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnDestroy, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  CAPTION_MAX_LENGTH,
-  POST_IMAGE_EXTENSIONS,
-  POST_IMAGE_MAX_BYTES,
-  POST_IMAGE_TYPES,
-} from '../../../core/models/post.models';
+import { CAPTION_MAX_LENGTH, POST_IMAGE_MAX_BYTES } from '../../../core/models/post.models';
 import { AuthService } from '../../../core/services/auth.service';
 import { CreatePostDialog } from '../../../core/services/create-post-dialog.service';
 import { PostService } from '../../../core/services/post.service';
 import { getApiErrorMessage } from '../../../core/utils/api-error';
+import { IMAGE_TYPES, validateImage } from '../../../core/utils/image-validation';
 import { MyAvatar } from '../../../shared/avatar/my-avatar';
 import { Icon } from '../../../shared/icon/icon';
 import { Modal } from '../../../shared/modal/modal';
@@ -30,7 +26,7 @@ export class CreatePostModal implements OnDestroy {
   protected readonly auth = inject(AuthService);
 
   protected readonly captionMaxLength = CAPTION_MAX_LENGTH;
-  protected readonly acceptedTypes = POST_IMAGE_TYPES.join(',');
+  protected readonly acceptedTypes = IMAGE_TYPES.join(',');
 
   protected readonly image = signal<File | null>(null);
   protected readonly previewUrl = signal<string | null>(null);
@@ -111,7 +107,7 @@ export class CreatePostModal implements OnDestroy {
   }
 
   private selectImage(file: File): void {
-    const validationError = validateImage(file);
+    const validationError = validateImage(file, POST_IMAGE_MAX_BYTES);
     this.error.set(validationError);
 
     if (validationError) {
@@ -130,20 +126,4 @@ export class CreatePostModal implements OnDestroy {
       this.previewUrl.set(null);
     }
   }
-}
-
-function validateImage(file: File): string {
-  const extension = file.name.slice(file.name.lastIndexOf('.'));
-
-  if (!POST_IMAGE_EXTENSIONS.includes(extension) || !POST_IMAGE_TYPES.includes(file.type)) {
-    return 'Choose a .jpg, .jpeg or .png image (lowercase extension).';
-  }
-  if (file.size === 0) {
-    return 'That file is empty. Choose another image.';
-  }
-  if (file.size > POST_IMAGE_MAX_BYTES) {
-    return 'Images must be 50MB or less.';
-  }
-
-  return '';
 }

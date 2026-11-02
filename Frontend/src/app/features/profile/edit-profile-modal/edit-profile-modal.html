@@ -1,0 +1,73 @@
+<app-modal
+  title="Edit Profile"
+  subtitle="Keep your profile fresh and recognizably you."
+  [wide]="true"
+  [closable]="!saving()"
+  (closed)="closed.emit()"
+>
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <div class="avatar-editor">
+      @if (previewUrl(); as url) {
+        <span class="avatar-preview"><img [src]="url" alt="New profile photo preview" /></span>
+      } @else {
+        <app-avatar
+          [firstName]="profile().firstName"
+          [lastName]="profile().lastName"
+          [userId]="profile().userId"
+          [picturePath]="profile().profilePicturePath"
+          size="xl"
+        />
+      }
+
+      <div>
+        <input #fileInput type="file" [accept]="acceptedTypes" (change)="onFileSelected($event)" hidden />
+        <button type="button" class="button button-secondary" (click)="fileInput.click()" [disabled]="saving()">
+          <app-icon name="upload" [size]="18" />{{ picture() ? 'Choose another' : 'Change photo' }}
+        </button>
+        @if (picture()) {
+          <button type="button" class="text-action" (click)="cancelNewPhoto()" [disabled]="saving()">Cancel new photo</button>
+        }
+        <p>JPG or PNG, up to 5MB. Use a square image for best results.</p>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <label class="field">
+        <span>First name</span>
+        <input formControlName="firstName" autocomplete="given-name" [attr.maxlength]="nameMaxLength" [attr.aria-invalid]="showError('firstName')" />
+        @if (showError('firstName')) {
+          <small class="field-error">Enter your first name.</small>
+        }
+      </label>
+
+      <label class="field">
+        <span>Last name</span>
+        <input formControlName="lastName" autocomplete="family-name" [attr.maxlength]="nameMaxLength" [attr.aria-invalid]="showError('lastName')" />
+        @if (showError('lastName')) {
+          <small class="field-error">Enter your last name.</small>
+        }
+      </label>
+    </div>
+
+    <label class="field modal-field">
+      <span>Bio</span>
+      <textarea formControlName="bio" [attr.maxlength]="bioMaxLength" placeholder="Tell people a little about yourself."></textarea>
+      <em [class.warn]="bioLength() > bioMaxLength - 20">{{ bioLength() }}/{{ bioMaxLength }}</em>
+    </label>
+
+    @if (error()) {
+      <div class="inline-error modal-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+    }
+
+    <div class="modal-actions">
+      <button type="button" class="button button-secondary" (click)="closed.emit()" [disabled]="saving()">Cancel</button>
+      <button type="submit" class="button button-primary" [disabled]="saving()">
+        @if (saving()) {
+          <span class="spinner"></span>Saving…
+        } @else {
+          Save Changes
+        }
+      </button>
+    </div>
+  </form>
+</app-modal>

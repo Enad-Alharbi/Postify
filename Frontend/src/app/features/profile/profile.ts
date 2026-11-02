@@ -12,11 +12,13 @@ import { toApiUrl } from '../../core/utils/api-url';
 import { PagedList } from '../../core/utils/paged-list';
 import { Avatar } from '../../shared/avatar/avatar';
 import { Icon } from '../../shared/icon/icon';
+import { ToastService } from '../../shared/toast/toast.service';
+import { EditProfileModal } from './edit-profile-modal/edit-profile-modal';
 
 // One page for both "/profile" (me) and "/users/:userId" (someone else).
 @Component({
   selector: 'app-profile',
-  imports: [RouterLink, Avatar, Icon],
+  imports: [RouterLink, Avatar, EditProfileModal, Icon],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
@@ -26,6 +28,7 @@ export class Profile implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toast = inject(ToastService);
 
   // Bound from the :userId route param; undefined on /profile.
   readonly userId = input<string>();
@@ -35,6 +38,7 @@ export class Profile implements OnInit {
   protected readonly loading = signal(true);
   protected readonly notFound = signal(false);
   protected readonly error = signal('');
+  protected readonly editing = signal(false);
 
   protected readonly posts = new PagedList<Post>(
     (pageNumber) => {
@@ -82,6 +86,12 @@ export class Profile implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  protected onProfileSaved(profile: UserProfile): void {
+    this.profile.set(profile);
+    this.editing.set(false);
+    this.toast.show('Profile changes saved.');
   }
 
   protected imageUrl(post: Post): string {

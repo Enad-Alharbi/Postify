@@ -32,6 +32,11 @@ export class AuthService {
     return this.http.get<User>(`${this.apiUrl}/Users/me`).pipe(tap((user) => this.user.set(user)));
   }
 
+  // Keeps the navbar and greeting in sync after the user edits their name.
+  updateCurrentUserNames(firstName: string, lastName: string): void {
+    this.user.update((user) => (user ? { ...user, firstName, lastName } : user));
+  }
+
   // Runs on app start so a page refresh keeps the user signed in.
   restoreSession(): Observable<User | null> {
     if (!this.getToken()) {
