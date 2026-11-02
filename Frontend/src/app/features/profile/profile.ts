@@ -59,10 +59,17 @@ export class Profile implements OnInit {
     this.loadProfile();
     this.posts.loadMore();
 
+    // Only my own posts can be created, edited or deleted, so only my profile needs to listen.
     if (this.isMine()) {
       this.postService.postCreated$
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((created) => this.posts.prepend(created));
+      this.postService.postUpdated$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((updated) => this.posts.replace(updated));
+      this.postService.postDeleted$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((deletedId) => this.posts.remove(deletedId));
     }
   }
 

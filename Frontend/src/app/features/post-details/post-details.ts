@@ -6,6 +6,7 @@ import { COMMENT_MAX_LENGTH, Comment } from '../../core/models/comment.models';
 import { Post } from '../../core/models/post.models';
 import { AuthService } from '../../core/services/auth.service';
 import { CommentService } from '../../core/services/comment.service';
+import { PostActionsDialog } from '../../core/services/post-actions-dialog.service';
 import { PostService } from '../../core/services/post.service';
 import { getApiErrorMessage } from '../../core/utils/api-error';
 import { toApiUrl } from '../../core/utils/api-url';
@@ -30,6 +31,8 @@ export class PostDetails implements OnInit {
   private readonly commentService = inject(CommentService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
+  private readonly postActions = inject(PostActionsDialog);
   protected readonly auth = inject(AuthService);
 
   // Bound from the :postId route param.
@@ -77,6 +80,12 @@ export class PostDetails implements OnInit {
   protected readonly sendError = signal('');
   protected readonly canSend = computed(() => this.draft().trim().length > 0 && !this.sending());
 
+  protected readonly postMenu: ActionMenuItem[] = [
+    { id: 'edit', label: 'Edit caption', icon: 'edit' },
+    { id: 'delete', label: 'Delete post', icon: 'trash', danger: true },
+  ];
+  protected readonly isOwnPost = computed(() => this.post()?.userId === this.auth.currentUser()?.id);
+
   protected readonly commentActions: ActionMenuItem[] = [
     { id: 'edit', label: 'Edit', icon: 'edit' },
     { id: 'delete', label: 'Delete', icon: 'trash', danger: true },
@@ -89,6 +98,19 @@ export class PostDetails implements OnInit {
   ngOnInit(): void {
     this.loadPost();
     this.comments.loadMore();
+
+    // Edits and deletes happen in the shell's dialogs; keep this page in sync.
+    this.postService.postUpdated$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updated) => {
+      if (updated.id === this.postId()) {
+        this.post.set(updated);
+      }
+    });
+
+    this.postService.postDeleted$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((deletedId) => {
+      if (deletedId === this.postId()) {
+        this.router.navigate(this.backLink()?.link ?? ['/'], { replaceUrl: true });
+      }
+    });
   }
 
   protected loadPost(): void {
@@ -139,6 +161,14 @@ export class PostDetails implements OnInit {
           this.sending.set(false);
         },
       });
+  }
+
+  protected onPostAction(action: string, post: Post): void {
+    if (action === 'edit') {
+      this.postActions.openEdit(post);
+    } else if (action === 'delete') {
+      this.postActions.openDelete(post);
+    }
   }
 
   // Only the author sees the menu; the backend still enforces ownership with 403.

@@ -104,6 +104,9 @@ a {
 
 .detail-post-head {
   padding: 22px 22px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .author-block {

@@ -1,0 +1,30 @@
+.edit-reference {
+  margin: 20px 22px 0;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #faf9f7;
+
+  img {
+    width: 64px;
+    height: 64px;
+    border-radius: 9px;
+    object-fit: cover;
+  }
+
+  span {
+    font-size: 9px;
+    color: var(--indigo);
+    letter-spacing: 0.1em;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+}

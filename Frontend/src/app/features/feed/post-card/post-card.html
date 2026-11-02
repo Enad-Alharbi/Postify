@@ -9,6 +9,9 @@
         <span>{{ '@' + p.userName }} · {{ p.createdAt | timeAgo }}</span>
       </span>
     </a>
+    @if (isOwn()) {
+      <app-action-menu [items]="actions" label="Post actions" (selected)="onAction($event)" />
+    }
   </div>
 
   @if (p.caption) {

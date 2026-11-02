@@ -1,0 +1,30 @@
+<app-modal title="Edit Post" subtitle="Update your caption. Your image will stay the same." [closable]="!saving()" (closed)="close()">
+  <div class="edit-reference">
+    <img [src]="imageUrl()" alt="Post being edited" />
+    <div>
+      <span>POST IMAGE</span>
+      <p>Images can’t be replaced after publishing.</p>
+    </div>
+  </div>
+
+  <label class="field modal-field">
+    <span>Caption <small>Optional</small></span>
+    <textarea [value]="caption()" (input)="onInput($event)" [attr.maxlength]="maxLength" [disabled]="saving()"></textarea>
+    <em [class.warn]="caption().length > maxLength - 20">{{ caption().length }}/{{ maxLength }}</em>
+  </label>
+
+  @if (error()) {
+    <div class="inline-error modal-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+  }
+
+  <div class="modal-actions">
+    <button type="button" class="button button-secondary" (click)="close()" [disabled]="saving()">Cancel</button>
+    <button type="button" class="button button-primary" (click)="save()" [disabled]="!canSave()">
+      @if (saving()) {
+        <span class="spinner"></span>Saving…
+      } @else {
+        Save Changes
+      }
+    </button>
+  </div>
+</app-modal>

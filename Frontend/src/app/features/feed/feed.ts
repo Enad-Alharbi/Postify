@@ -31,10 +31,16 @@ export class Feed implements OnInit {
   ngOnInit(): void {
     this.posts.loadMore();
 
-    // A post created from the modal goes straight to the top of the feed.
+    // Changes made from the shell's post modals show up without a reload.
     this.postService.postCreated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((created) => this.posts.prepend(created));
+    this.postService.postUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updated) => this.posts.replace(updated));
+    this.postService.postDeleted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((deletedId) => this.posts.remove(deletedId));
   }
 }
 
