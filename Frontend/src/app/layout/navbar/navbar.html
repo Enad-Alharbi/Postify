@@ -30,5 +30,8 @@
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
     <app-icon name="home" /><span>Home</span>
   </a>
+  <button type="button" (click)="createPost.show()">
+    <span class="mobile-create"><app-icon name="plus" /></span><span>Create</span>
+  </button>
   <a routerLink="/profile" routerLinkActive="active"><app-icon name="user" /><span>Profile</span></a>
 </nav>

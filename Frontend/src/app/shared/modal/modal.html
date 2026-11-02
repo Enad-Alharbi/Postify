@@ -1,0 +1,16 @@
+<div class="modal-backdrop" (mousedown)="onBackdropMouseDown($event)">
+  <section #dialog class="modal" [class.modal-wide]="wide()" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <header>
+      <div>
+        <h2 [id]="titleId">{{ title() }}</h2>
+        @if (subtitle()) {
+          <p>{{ subtitle() }}</p>
+        }
+      </div>
+      <button type="button" class="icon-button" (click)="requestClose()" [disabled]="!closable()" aria-label="Close">
+        <app-icon name="close" />
+      </button>
+    </header>
+    <ng-content />
+  </section>
+</div>

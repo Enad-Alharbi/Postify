@@ -2,14 +2,16 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Post } from '../../core/models/post.models';
 import { AuthService } from '../../core/services/auth.service';
+import { CreatePostDialog } from '../../core/services/create-post-dialog.service';
 import { PostService } from '../../core/services/post.service';
 import { getApiErrorMessage } from '../../core/utils/api-error';
+import { Avatar } from '../../shared/avatar/avatar';
 import { Icon } from '../../shared/icon/icon';
 import { PostCard } from './post-card/post-card';
 
 @Component({
   selector: 'app-feed',
-  imports: [Icon, PostCard],
+  imports: [Avatar, Icon, PostCard],
   templateUrl: './feed.html',
   styleUrl: './feed.scss',
 })
@@ -17,6 +19,7 @@ export class Feed implements OnInit {
   private readonly postService = inject(PostService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly auth = inject(AuthService);
+  protected readonly createPost = inject(CreatePostDialog);
 
   protected readonly posts = signal<Post[]>([]);
   protected readonly loading = signal(false);
@@ -29,6 +32,11 @@ export class Feed implements OnInit {
 
   ngOnInit(): void {
     this.loadMore();
+
+    // A post created from the modal goes straight to the top of the feed.
+    this.postService.postCreated$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((created) => {
+      this.posts.update((posts) => [created, ...posts.filter((post) => post.id !== created.id)]);
+    });
   }
 
   protected loadMore(): void {

@@ -1,14 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CreatePostDialog } from '../../core/services/create-post-dialog.service';
+import { CreatePostModal } from '../../features/posts/create-post-modal/create-post-modal';
+import { Toast } from '../../shared/toast/toast';
 import { Navbar } from '../navbar/navbar';
 
-// Wraps every signed-in page with the navbar.
+// Wraps every signed-in page with the navbar, plus the app-wide Create Post modal and toast.
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, Navbar],
+  imports: [RouterOutlet, Navbar, CreatePostModal, Toast],
   template: `
     <app-navbar />
     <router-outlet />
+
+    @if (createPost.isOpen()) {
+      <app-create-post-modal />
+    }
+    <app-toast />
   `,
   styles: `
     :host {
@@ -24,4 +32,6 @@ import { Navbar } from '../navbar/navbar';
     }
   `,
 })
-export class Shell {}
+export class Shell {
+  protected readonly createPost = inject(CreatePostDialog);
+}

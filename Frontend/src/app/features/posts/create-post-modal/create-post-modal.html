@@ -1,0 +1,70 @@
+<app-modal
+  title="Create Post"
+  subtitle="Share a new moment with your community."
+  [wide]="true"
+  [closable]="!loading()"
+  (closed)="close()"
+>
+  @if (auth.currentUser(); as user) {
+    <div class="modal-author">
+      <app-avatar [firstName]="user.firstName" [lastName]="user.lastName" [userId]="user.id" />
+      <div>
+        <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+        <span>{{ '@' + user.userName }}</span>
+      </div>
+    </div>
+  }
+
+  <input #fileInput type="file" [accept]="acceptedTypes" (change)="onFileSelected($event)" hidden />
+
+  @if (previewUrl(); as url) {
+    <div class="upload-preview">
+      <img [src]="url" alt="Selected image preview" />
+      <button type="button" (click)="removeImage()" [disabled]="loading()">
+        <app-icon name="close" [size]="17" />Remove image
+      </button>
+    </div>
+  } @else {
+    <button
+      type="button"
+      class="upload-zone"
+      [class.dragging]="dragging()"
+      (click)="fileInput.click()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="dragging.set(false)"
+      (drop)="onDrop($event)"
+    >
+      <span class="upload-icon"><app-icon name="image" [size]="28" /></span>
+      <strong>Choose an image to share</strong>
+      <small>Drag and drop or select a photo from your device</small>
+      <span class="fake-select">Select image</span>
+    </button>
+  }
+
+  <label class="field modal-field">
+    <span>Caption <small>Optional</small></span>
+    <textarea
+      [value]="caption()"
+      (input)="onCaptionInput($event)"
+      [attr.maxlength]="captionMaxLength"
+      [disabled]="loading()"
+      placeholder="What’s the story behind this moment?"
+    ></textarea>
+    <em [class.warn]="caption().length > captionMaxLength - 20">{{ caption().length }}/{{ captionMaxLength }}</em>
+  </label>
+
+  @if (error()) {
+    <div class="inline-error modal-error" role="alert"><app-icon name="alert" [size]="18" />{{ error() }}</div>
+  }
+
+  <div class="modal-actions">
+    <button type="button" class="button button-secondary" (click)="close()" [disabled]="loading()">Cancel</button>
+    <button type="button" class="button button-primary" (click)="publish()" [disabled]="!image() || loading()">
+      @if (loading()) {
+        <span class="spinner"></span>Publishing…
+      } @else {
+        Publish Post
+      }
+    </button>
+  </div>
+</app-modal>

@@ -99,10 +99,13 @@
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
     display: grid;
-    // The prototype has 3 slots (Home, Create, Profile); Create arrives with the Create Post modal.
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 
-    a {
+    a,
+    button {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -117,5 +120,15 @@
         color: var(--indigo);
       }
     }
+  }
+
+  .mobile-create {
+    width: 34px;
+    height: 30px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    color: white;
+    background: var(--indigo);
   }
 }

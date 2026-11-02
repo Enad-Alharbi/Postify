@@ -301,9 +301,54 @@ h3 {
   gap: 8px;
 }
 
+// Modal content (projected into app-modal, so these must be global)
+.modal-field {
+  margin: 18px 22px;
+
+  > span small {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  em {
+    position: absolute;
+    right: 10px;
+    bottom: 8px;
+    color: var(--muted);
+    font-style: normal;
+    font-size: 10px;
+  }
+
+  em.warn {
+    color: var(--danger);
+  }
+}
+
+.modal-actions {
+  padding: 16px 22px 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-error {
+  margin: 0 22px 16px;
+}
+
 @media (max-width: 600px) {
   .field-row {
     flex-direction: column;
     gap: 0;
+  }
+
+  .modal-actions {
+    position: sticky;
+    bottom: 0;
+    background: white;
+
+    .button {
+      flex: 1;
+    }
   }
 }

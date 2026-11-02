@@ -21,6 +21,30 @@
   }
 }
 
+.composer-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+.composer-prompt {
+  flex: 1;
+  height: 43px;
+  border: 0;
+  border-radius: 10px;
+  background: #f7f6f4;
+  color: var(--muted);
+  text-align: left;
+  padding: 0 15px;
+  cursor: pointer;
+}
+
 .feed-list {
   display: grid;
   gap: 22px;
@@ -73,6 +97,32 @@
     h1 {
       font-size: 27px;
     }
+  }
+
+  .desktop-create {
+    display: none;
+  }
+
+  .composer-card {
+    margin: 0 12px 14px;
+    border-radius: 14px;
+    padding: 11px;
+  }
+
+  // Icon-only button on phones.
+  .composer-button {
+    min-width: 43px;
+    width: 43px;
+    padding: 0;
+
+    span {
+      display: none;
+    }
+  }
+
+  .composer-prompt {
+    font-size: 12px;
+    padding: 0 11px;
   }
 
   .feed-list {
