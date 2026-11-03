@@ -355,7 +355,6 @@ npm test           # unit tests (Vitest)
 
 ## Known limitations
 
-- **No real-time updates:** new posts and comments from other users appear after a refresh or a "Load more".
 - **Tokens:** there's no refresh token, so you need to sign in again after 60 minutes.
 - **Local image storage:** images are stored on the API server's disk, not in cloud storage.
 - **Out of scope:** likes, follows, direct messages and notifications aren't part of this version.
